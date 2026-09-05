@@ -1,0 +1,1855 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ESLFlow Trial Demo</title>
+<style>
+:root{
+  --accent:#f65f93;
+  --accent-2:#ff8ab2;
+  --accent-soft:#ffe7ef;
+  --accent-soft-2:#fff7fa;
+  --bg:#fffafc;
+  --surface:#ffffff;
+  --surface-2:#fff3f7;
+  --text:#3e2632;
+  --muted:#7d6671;
+  --border:#ead5df;
+  --danger:#d95173;
+  --warning:#f5a623;
+  --success:#2fa66a;
+  --shadow:0 10px 30px rgba(93,40,64,.08);
+}
+[data-theme="dark"]{
+  --bg:#171318;
+  --surface:#211b21;
+  --surface-2:#2a2027;
+  --text:#f8eaf0;
+  --muted:#c7aebb;
+  --border:#4a3942;
+  --shadow:0 10px 30px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{
+  width:220px;
+  position:fixed;
+  left:0;top:0;bottom:0;
+  z-index:10;
+  padding:16px;
+  overflow:auto;
+  background:linear-gradient(180deg,var(--accent),#dd4d7d);
+  color:#fff;
+}
+.brand{
+  background:rgba(255,255,255,.92);
+  color:#5a2340;
+  border-radius:18px;
+  padding:14px;
+  box-shadow:var(--shadow);
+  margin-bottom:16px;
+}
+.brand-top{display:flex;gap:10px;align-items:center}
+.logo{
+  width:46px;height:46px;border-radius:13px;background:var(--accent);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900
+}
+.brand h2{margin:0;font-size:18px}
+.brand p{margin:4px 0 0;font-size:10px}
+.sidebar nav{border-top:1px solid rgba(255,255,255,.25);padding-top:10px}
+.nav-btn{
+  width:100%;border:0;background:transparent;color:#fff;text-align:left;
+  padding:11px 10px;border-radius:9px;margin:2px 0;font-weight:700
+}
+.nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,.2)}
+.sidebar-footer{
+  margin-top:16px;font-size:10px;opacity:.95;line-height:1.4
+}
+.main{
+  margin-left:220px;
+  width:calc(100% - 220px);
+  padding:24px 26px 60px;
+}
+.page{display:none}.page.active{display:block}
+.page-head{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:16px;margin-bottom:18px
+}
+.page-head h1{margin:0;font-size:30px;color:var(--text)}
+.page-head p{margin:5px 0 0;color:var(--muted)}
+.clock{
+  min-width:250px;background:var(--surface);border:1px solid var(--accent);
+  border-radius:12px;padding:10px 13px;text-align:right;font-size:12px;
+  box-shadow:var(--shadow)
+}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:16px;
+  margin-bottom:18px;
+}
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:14px;margin-bottom:18px
+}
+.stat{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:18px;
+  box-shadow:var(--shadow);
+}
+.stat strong{display:block;font-size:28px;color:var(--accent);margin-bottom:4px}
+.stat span{font-size:13px;color:var(--muted)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.toolbar{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px
+}
+.filters{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;flex:1
+}
+input,select,textarea{
+  width:100%;border:1px solid var(--border);border-radius:9px;
+  padding:10px 12px;background:var(--surface);color:var(--text);outline:none
+}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px}
+.btn{
+  border:0;border-radius:9px;padding:10px 14px;font-weight:700;
+  background:var(--accent);color:#fff
+}
+.btn.secondary{background:#f4c4d5;color:#6a2e49}
+.btn.outline{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn.danger{background:var(--danger)}
+.btn.success{background:var(--success)}
+.btn.small{padding:6px 9px;font-size:11px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{
+  background:var(--accent-soft);
+  color:#6e2a48;
+  padding:10px;text-align:left;font-size:11px;text-transform:uppercase
+}
+td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.badge{
+  display:inline-block;padding:5px 8px;border-radius:999px;
+  background:var(--accent-soft);color:#7f3153;font-size:11px;font-weight:700
+}
+.badge.success{background:#dcf6e8;color:#236746}
+.badge.warning{background:#fff0cd;color:#8b6012}
+.badge.gray{background:#eceaec;color:#5c5359}
+.action{
+  border:0;border-radius:6px;padding:5px 8px;font-size:11px;margin:2px
+}
+.action.view{background:#ffe6ef;color:#96365d}
+.action.edit{background:#f4c8d8;color:#84304e}
+.action.feedback{background:var(--accent);color:#fff}
+.action.delete{background:var(--danger);color:#fff}
+.empty{text-align:center;padding:28px;color:var(--muted)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+.modal{
+  position:fixed;inset:0;background:rgba(35,20,28,.52);
+  display:none;align-items:center;justify-content:center;z-index:100;padding:20px
+}
+.modal.open{display:flex}
+.modal-card{
+  width:min(820px,96vw);max-height:92vh;overflow:auto;
+  background:var(--surface);border-radius:17px;padding:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35)
+}
+.modal-card h2{margin:0 0 14px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+
+/* Calendar */
+.calendar-shell{background:var(--surface);border:1px solid var(--border);border-radius:15px;overflow:hidden;box-shadow:var(--shadow)}
+.cal-toolbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--border)}
+.cal-nav-left,.cal-nav-right{display:flex;align-items:center;gap:8px}
+.cal-nav-right{justify-content:flex-end}
+.cal-title{font-weight:800;text-align:center;color:var(--accent)}
+.smallbtn{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:8px 11px;border-radius:8px}
+.smallbtn.today{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sleep-note{
+  margin:10px 12px;border:1px solid #f0bc44;background:#fff5d2;color:#7e590d;
+  border-radius:8px;padding:8px 12px;text-align:center;font-size:11px
+}
+.week-wrap{overflow:auto;max-height:650px}
+.week-grid{min-width:1050px;display:grid;grid-template-columns:54px repeat(7,minmax(125px,1fr));grid-auto-rows:48px;position:relative}
+.corner,.day-head,.time-cell,.slot{border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.corner{position:sticky;top:0;left:0;background:var(--surface);z-index:6}
+.day-head{position:sticky;top:0;z-index:5;background:var(--surface);text-align:center;font-weight:800;font-size:12px;padding:12px 6px;color:var(--accent)}
+.time-cell{position:sticky;left:0;z-index:4;background:var(--surface);font-size:11px;color:var(--muted);padding:17px 5px 0;text-align:right}
+.slot{position:relative;background:var(--surface)}.slot:hover{background:var(--surface-2)}
+.event{
+  position:absolute;left:3px;right:3px;top:3px;border-radius:7px;
+  padding:6px 8px;font-size:11px;line-height:1.25;z-index:3;overflow:hidden
+}
+.event strong{display:block}.event small{display:block}
+.pinecone{background:#ffd5e2}.novakid{background:#d5efff}.preply{background:#fff0ba}.cambly{background:#d2f2d8}.direct{background:#eadbff}.other{background:#e9e9e9}
+.available{background:#25b9e9;color:#fff;font-weight:800}
+.blocked{background:#dedede;color:#555;font-weight:800}
+.calendar-bottom{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--border)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px}
+.dot{width:13px;height:13px;border-radius:50%;display:inline-block;vertical-align:-2px;margin-right:4px}
+.dot.pinecone{background:#f76798}.dot.novakid{background:#55b8ef}.dot.preply{background:#ffc43d}.dot.cambly{background:#62d477}.dot.direct{background:#a87ae8}.dot.other{background:#aaa}
+
+/* setup */
+.setup-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+.hero{
+  background:linear-gradient(145deg,var(--accent),#d94b7a);
+  color:#fff;border-radius:20px;padding:26px;min-height:250px
+}
+.hero h2{font-size:32px;margin:0 0 10px}.hero p{line-height:1.6}
+.checklist{display:grid;gap:9px;margin-top:16px}
+.check{
+  display:flex;gap:9px;align-items:flex-start;background:rgba(255,255,255,.14);
+  padding:10px;border-radius:10px
+}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{width:34px;height:34px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--border)}
+.note{
+  padding:10px 12px;border-radius:10px;background:var(--surface-2);
+  border:1px solid var(--border);font-size:12px;color:var(--muted)
+}
+.print-only{display:none}
+
+@media(max-width:1100px){
+  .filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:1fr 1fr}
+}
+@media(max-width:900px){
+  .sidebar{width:78px;padding:10px}.brand p,.brand h2,.nav-label,.sidebar-footer{display:none}
+  .brand{padding:8px}.brand-top{justify-content:center}.main{margin-left:78px;width:calc(100% - 78px);padding:18px}
+  .grid-2,.grid-3,.setup-grid{grid-template-columns:1fr}.page-head{flex-direction:column}.clock{text-align:left}
+  .toolbar{flex-direction:column;align-items:stretch}.filters{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}
+  .cal-toolbar{grid-template-columns:1fr}.cal-title{order:-1}.cal-nav-right{justify-content:flex-start;flex-wrap:wrap}
+}
+@media print{
+  body{background:#fff}.sidebar,.page-head,.toolbar,.btn,.action,.clock,.calendar-shell{display:none!important}
+  .main{margin:0;width:100%;padding:0}.page{display:none!important}.page.print-target{display:block!important}
+  .card{box-shadow:none;border:0}.print-only{display:block}
+}
+
+.trial-banner{
+  position:sticky;top:0;z-index:50;background:#3c1630;color:#fff;
+  padding:10px 16px;display:flex;justify-content:space-between;align-items:center;
+  gap:12px;box-shadow:0 4px 14px rgba(0,0,0,.12)
+}
+.trial-banner strong{font-size:14px}
+.trial-banner span{font-size:12px;opacity:.92}
+.trial-btn{
+  background:#fff;color:#7f2c58;border:0;border-radius:8px;
+  padding:8px 12px;font-weight:800
+}
+.trial-note{
+  background:#fff6fa;border:1px solid #ffd1e1;border-radius:14px;
+  padding:12px 14px;margin-bottom:14px;font-size:12px;color:#734258;
+}
+.trial-overlay{
+  position:fixed;inset:0;z-index:9999;background:rgba(40,18,32,.58);
+  display:none;align-items:center;justify-content:center;padding:18px
+}
+.trial-overlay.open{display:flex}
+.trial-card{
+  width:min(520px,100%);background:var(--surface);color:var(--text);
+  border:1px solid var(--border);border-radius:22px;padding:24px;
+  box-shadow:0 30px 80px rgba(0,0,0,.25)
+}
+.trial-card h2{margin:0 0 8px}.trial-card p{color:var(--muted);line-height:1.55}
+.trial-card .price{font-size:36px;font-weight:900;color:var(--accent);margin:10px 0}
+.trial-card .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.trial-card .actions .btn{flex:1;min-width:170px}
+
+
+.premium-view-note{
+  background:#fff7fa;border:1px dashed #f3a9c3;border-radius:12px;
+  padding:10px 12px;margin:0 0 14px;font-size:12px;color:#754057;
+}
+.full-only-tag{
+  margin-left:6px;background:rgba(255,255,255,.22);padding:2px 5px;
+  border-radius:999px;font-size:8px;font-weight:900;
+}
+</style>
+
+<style id="eslflow-mobile-reminder-css">
+/* ESLFlow v1.1 mobile + reminder enhancements */
+.reminder-center{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  box-shadow:var(--shadow);padding:14px 16px;margin:0 0 18px;
+}
+.reminder-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.reminder-title{font-weight:900;color:var(--text);display:flex;align-items:center;gap:8px}
+.reminder-title .bell{font-size:20px}
+.reminder-sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+.reminder-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.reminder-controls select,.reminder-controls button{min-height:42px}
+.reminder-status{
+  margin-top:10px;padding:10px 12px;border-radius:11px;background:var(--soft);
+  color:var(--text);font-size:12px;line-height:1.45
+}
+.reminder-status strong{color:var(--accent)}
+.eslflow-toast{
+  position:fixed;right:18px;bottom:18px;z-index:10050;
+  width:min(360px,calc(100% - 36px));background:var(--surface);color:var(--text);
+  border:1px solid var(--accent);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.18);
+  padding:14px 16px;display:none;
+}
+.eslflow-toast.show{display:block}
+.eslflow-toast strong{display:block;margin-bottom:4px}
+.eslflow-toast small{color:var(--muted);line-height:1.4}
+.mobile-agenda{min-width:0!important;display:block!important;padding:8px;background:var(--bg)}
+.mobile-day{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.mobile-day-head{padding:10px 12px;font-weight:900;color:var(--accent);background:var(--soft);border-bottom:1px solid var(--border)}
+.mobile-agenda-item{padding:11px 12px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:82px 1fr;gap:10px;align-items:start}
+.mobile-agenda-item:last-child{border-bottom:0}
+.mobile-agenda-time{font-weight:900;font-size:12px;color:var(--text)}
+.mobile-agenda-main strong{display:block;font-size:13px}
+.mobile-agenda-main small{display:block;color:var(--muted);margin-top:3px;line-height:1.35}
+.mobile-agenda-tools{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.mobile-agenda-tools button{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:6px 9px;font-weight:700}
+.mobile-empty{padding:12px;color:var(--muted);font-size:12px}
+
+@media(max-width:700px){
+  html,body{max-width:100%;overflow-x:hidden}
+  body{padding-bottom:0}
+  .sidebar{
+    position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;
+    width:100%!important;height:72px!important;padding:6px 6px!important;z-index:1000!important;
+    overflow:hidden!important;background:linear-gradient(90deg,var(--accent),#dd4d7d)!important;
+  }
+  .sidebar .brand,.sidebar-footer{display:none!important}
+  .sidebar nav{
+    display:flex!important;gap:4px!important;overflow-x:auto!important;overflow-y:hidden!important;
+    border:0!important;padding:0 0 4px!important;scrollbar-width:thin;
+  }
+  .sidebar .nav-btn{
+    flex:0 0 78px!important;min-width:78px!important;height:56px!important;margin:0!important;
+    padding:5px 3px!important;border-radius:11px!important;display:flex!important;flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;gap:2px!important;font-size:17px!important;
+    white-space:nowrap!important;
+  }
+  .sidebar .nav-label{display:block!important;font-size:9px!important;line-height:1.05!important}
+  .main{
+    margin-left:0!important;width:100%!important;padding:12px 12px 92px!important;min-width:0!important;
+  }
+  .trial-banner{position:relative!important;padding:9px 10px!important;align-items:flex-start!important}
+  .trial-banner span{display:block;margin-top:2px}
+  .trial-banner>div:last-child{width:100%}
+  .trial-banner .trial-btn{flex:1;min-height:42px}
+  .page-head{gap:8px!important;margin-bottom:12px!important}
+  .page-head h1{font-size:22px!important}
+  .page-head p{font-size:12px!important}
+  .clock{min-width:0!important;width:100%!important;text-align:left!important}
+  .stats{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .stat{padding:12px!important}
+  .stat strong{font-size:22px!important}
+  .grid-2,.grid-3,.setup-grid,.filters,.form-grid{grid-template-columns:1fr!important}
+  .card{padding:12px!important;border-radius:14px!important}
+  .toolbar{gap:9px!important}
+  input,select,textarea,button{font-size:16px}
+  .btn,.smallbtn,.action{min-height:44px}
+  .modal-card{width:calc(100% - 18px)!important;max-height:88vh!important;padding:14px!important}
+  table{min-width:690px}
+  .calendar-shell{border-radius:14px!important}
+  .cal-toolbar{padding:10px!important}
+  .cal-nav-left,.cal-nav-right{display:flex!important;gap:6px!important;flex-wrap:wrap!important}
+  .cal-nav-left button{flex:1;min-width:82px}
+  .cal-nav-right select,.cal-nav-right button{flex:1;min-width:120px}
+  .week-wrap{overflow:visible!important;max-height:none!important}
+  .week-grid:not(.mobile-agenda){min-width:0!important}
+  .calendar-bottom{padding:10px!important;gap:10px!important}
+  .legend{display:none!important}
+  .reminder-center{padding:12px;margin-bottom:12px}
+  .reminder-controls{width:100%}
+  .reminder-controls select,.reminder-controls button{flex:1;min-width:130px}
+  .eslflow-toast{right:10px;bottom:82px;width:calc(100% - 20px)}
+}
+@media(min-width:701px){
+  .eslflow-toast{bottom:18px}
+}
+</style>
+
+</head>
+<body>
+
+<div class="trial-banner">
+  <div>
+    <strong>ESLFlow Trial Demo</strong>
+    <span> Create up to 3 students and up to 3 records in each major section.</span>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="trial-btn" onclick="resetTrial()">Reset Trial</button>
+    <button class="trial-btn" onclick="showTrialUpgrade()">Get Full Version — ₱299</button>
+  </div>
+</div>
+
+
+<div class="trial-overlay" id="trialOverlay">
+  <div class="trial-card">
+    <h2>You've reached the Trial limit 💗</h2>
+    <p>This trial lets you test ESLFlow with a small amount of real data. Upgrade to the Full Version to remove the limits and unlock premium tools.</p>
+    <div class="price">₱299</div>
+    <p><strong>One-time purchase • No monthly subscription</strong></p>
+    <div class="actions">
+      <button class="btn secondary" onclick="hideTrialUpgrade()">Continue Trial</button>
+      <button class="btn" onclick="purchaseInfo()">How to Purchase</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-top">
+        <div class="logo">EF</div>
+        <div>
+          <h2 id="brandName">ESLFlow</h2>
+          <p id="brandTagline">Teach • Track • Grow</p>
+        </div>
+      </div>
+    </div>
+    <nav>
+      <button class="nav-btn active" data-page="dashboard">⌂ <span class="nav-label">Dashboard</span></button>
+      <button class="nav-btn" data-page="students">♟ <span class="nav-label">Students</span></button>
+      <button class="nav-btn" data-page="schedule">▣ <span class="nav-label">Schedule</span></button>
+      <button class="nav-btn" data-page="attendance">✓ <span class="nav-label">Attendance</span></button>
+      <button class="nav-btn" data-page="feedback">✎ <span class="nav-label">Feedback</span></button>
+      <button class="nav-btn" data-page="platforms">▤ <span class="nav-label">Platforms</span></button>
+      <button class="nav-btn" data-page="payments">₱ <span class="nav-label">Payments</span></button>
+      <button class="nav-btn" data-page="records">◷ <span class="nav-label">Class Records</span></button>
+      <button class="nav-btn" data-page="reports">▦ <span class="nav-label">Reports</span></button>
+      <button class="nav-btn" data-page="backup">⇩ <span class="nav-label">Backup & Export</span></button>
+      <button class="nav-btn" data-page="settings">⚙ <span class="nav-label">Settings</span></button>
+    </nav>
+    <div class="sidebar-footer">Offline-first teacher dashboard.<br>Your data stays in this browser unless you export it.</div>
+  </aside>
+
+  <main class="main">
+<div class="trial-note"><strong>Trial limits:</strong> You may create up to <b>3 students</b>, <b>3 classes</b>, <b>3 attendance records</b>, <b>3 feedback records</b>, <b>3 payments</b>, <b>3 class records</b>, and <b>3 availability slots</b>. <b>Accent Color customization is enabled in the Trial.</b> Other Settings changes and Backup & Export actions remain Full Version features.</div>
+    <section class="page active" id="dashboard">
+      <div class="page-head">
+        <div><h1 id="welcomeTitle">Teacher Dashboard</h1><p>Manage students, classes, income, feedback, and teaching records in one place.</p></div>
+        <div class="clock"></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong id="statStudents">0</strong><span>Total Students</span></div>
+        <div class="stat"><strong id="statUpcoming">0</strong><span>Upcoming Classes</span></div>
+        <div class="stat"><strong id="statMonthIncome">₱0</strong><span>This Month Income</span></div>
+        <div class="stat"><strong id="statAttendance">0%</strong><span>Attendance Rate</span></div>
+      </div>
+      <div class="grid-2">
+        <div class="card"><h3>Upcoming Classes</h3><div id="upcomingList" class="empty">No upcoming classes yet.</div></div>
+        <div class="card"><h3>Recent Feedback</h3><div id="recentFeedback" class="empty">No feedback yet.</div></div>
+      </div>
+      <div class="card">
+        <h3>Quick Actions</h3>
+        <div style="display:flex;gap:9px;flex-wrap:wrap">
+          <button class="btn" onclick="openStudentModal()">+ Add Student</button>
+          <button class="btn" onclick="openClassModal()">+ Add Class</button>
+          <button class="btn" onclick="openFeedbackModal()">+ Add Feedback</button>
+          <button class="btn outline" onclick="navigate('backup')">Backup Data</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="students">
+      <div class="page-head"><div><h1>Students</h1><p>Manage learners from multiple ESL platforms or direct clients.</p></div><div class="clock"></div></div>
+      <div class="card">
+        <div class="toolbar">
+          <div class="filters">
+            <input id="studentSearch" placeholder="Search name, ID, country, subject, or platform">
+            <select id="studentPlatformFilter"><option value="">All Platforms</option></select>
+            <select id="studentLevelFilter"><option value="">All Levels</option></select>
+            <select id="studentStatusFilter"><option value="">All Statuses</option><option>Active</option><option>Trial</option><option>Paused</option><option>Inactive</option></select>
+          </div>
+          <button class="btn" onclick="openStudentModal()">+ Add Student</button>
+        </div>
+        <div style="overflow:auto">
+          <table>
+            <thead><tr><th>Student</th><th>Platform</th><th>Country</th><th>Level</th><th>Subject</th><th>Rate</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="studentsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="schedule">
+      <div class="page-head"><div><h1>Schedule</h1><p>Weekly teaching calendar with availability and recurring lessons.</p></div><div class="clock"></div></div>
+      <div class="calendar-shell">
+        <div class="cal-toolbar">
+          <div class="cal-nav-left">
+            <button class="smallbtn" id="prevWeek">‹ Previous</button>
+            <button class="smallbtn today" id="todayWeek">Today</button>
+            <button class="smallbtn" id="nextWeek">Next ›</button>
+          </div>
+          <div class="cal-title" id="weekTitle"></div>
+          <div class="cal-nav-right">
+            <select id="timezoneSelect"><option>Asia/Manila</option><option>Asia/Tokyo</option><option>Asia/Seoul</option><option>Asia/Shanghai</option></select>
+            <button class="smallbtn" onclick="renderCalendar()">Refresh</button>
+            <button class="smallbtn" id="copySlots">Copy Slots</button>
+          </div>
+        </div>
+        <div class="sleep-note">Tip: You can set available or blocked time slots, then add booked classes on top of your weekly calendar.</div>
+        <div class="week-wrap"><div class="week-grid" id="weekGrid"></div></div>
+        <div class="calendar-bottom">
+          <div class="legend">
+            <span><i class="dot pinecone"></i>Pinecone</span><span><i class="dot novakid"></i>Novakid</span>
+            <span><i class="dot preply"></i>Preply</span><span><i class="dot cambly"></i>Cambly</span>
+            <span><i class="dot direct"></i>Direct</span><span><i class="dot other"></i>Other</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" onclick="openClassModal()">+ Add Class</button>
+            <button class="btn outline" onclick="openAvailabilityModal()">Manage Availability</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="attendance">
+      <div class="page-head"><div><h1>Attendance</h1><p>Track present, absent, late, cancelled, and no-show lessons.</p></div><div class="clock"></div></div>
+      <div class="card">
+        <div class="toolbar"><span></span><button class="btn" onclick="openAttendanceModal()">+ Add Attendance</button></div>
+        <div style="overflow:auto"><table><thead><tr><th>Student</th><th>Date</th><th>Class Time</th><th>Status</th><th>Platform</th><th>Notes</th><th>Actions</th></tr></thead><tbody id="attendanceBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="page" id="feedback">
+      <div class="page-head"><div><h1>Student Feedback</h1><p>Track strengths, weaknesses, improvement areas, and teacher comments.</p></div><div class="clock"></div></div>
+      <div class="card">
+        <div class="toolbar"><span></span><button class="btn" onclick="openFeedbackModal()">+ Add Feedback</button></div>
+        <div style="overflow:auto"><table><thead><tr><th>Student</th><th>Subject</th><th>Date</th><th>Strength</th><th>Weakness</th><th>Areas to Improve</th><th>Rating</th><th>Actions</th></tr></thead><tbody id="feedbackBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="page" id="platforms">
+      <div class="page-head"><div><h1>Platforms</h1><p>Manage companies, marketplaces, and direct-student sources.</p></div><div class="clock"></div></div>
+      <div class="card"><div class="toolbar"><span></span><button class="btn" onclick="openPlatformModal()">+ Add Platform</button></div><div class="grid-3" id="platformGrid"></div></div>
+    </section>
+
+    <section class="page" id="payments">
+      <div class="page-head"><div><h1>Payments</h1><p>Track earnings by student, platform, date, and payment status.</p></div><div class="clock"></div></div>
+      <div class="card">
+        <div class="toolbar">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select id="paymentMonth"></select>
+            <select id="paymentStatusFilter"><option value="">All Statuses</option><option>Paid</option><option>Pending</option></select>
+          </div>
+          <button class="btn" onclick="openPaymentModal()">+ Add Payment</button>
+        </div>
+        <div style="overflow:auto"><table><thead><tr><th>Student</th><th>Platform</th><th>Date</th><th>Amount</th><th>Status</th><th>Notes</th><th>Actions</th></tr></thead><tbody id="paymentsBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="page" id="records">
+      <div class="page-head"><div><h1>Class Records</h1><p>Save lesson material, progress notes, homework, and next-class plans.</p></div><div class="clock"></div></div>
+      <div class="card">
+        <div class="toolbar"><span></span><button class="btn" onclick="openRecordModal()">+ Add Class Record</button></div>
+        <div style="overflow:auto"><table><thead><tr><th>Student</th><th>Date</th><th>Lesson / Material</th><th>Progress Notes</th><th>Homework / Next Step</th><th>Actions</th></tr></thead><tbody id="recordsBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="page" id="reports">
+      <div class="page-head"><div><h1>Reports</h1><p>See simple teaching and income summaries.</p></div><div class="clock"></div></div>
+      <div class="stats">
+        <div class="stat"><strong id="reportStudents">0</strong><span>Students</span></div>
+        <div class="stat"><strong id="reportLessons">0</strong><span>Class Records</span></div>
+        <div class="stat"><strong id="reportIncome">₱0</strong><span>Total Paid Income</span></div>
+        <div class="stat"><strong id="reportAvgRate">₱0</strong><span>Average Student Rate</span></div>
+      </div>
+      <div class="grid-2">
+        <div class="card"><h3>Income by Platform</h3><div id="incomeByPlatform"></div></div>
+        <div class="card"><h3>Students by Level</h3><div id="studentsByLevel"></div></div>
+      </div>
+      <div class="card">
+        <h3>Monthly Income</h3>
+        <div id="monthlyIncome"></div>
+      </div>
+    </section>
+
+    <section class="page" id="backup"><div class="premium-view-note"><strong>Preview only:</strong> You can view Backup & Export tools in the Trial. Clicking any backup, restore, export, or print action will prompt you to upgrade to the Full Version.</div>
+      <div class="page-head"><div><h1>Backup & Export</h1><p>Protect your data and export reports for your own records.</p></div><div class="clock"></div></div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Full Backup</h3>
+          <p class="note">Export everything as one JSON backup file. This is the safest way to restore your dashboard later.</p>
+          <button class="btn" id="exportBackup">Export Full Backup</button>
+        </div>
+        <div class="card">
+          <h3>Restore Backup</h3>
+          <p class="note">Import a backup created by this dashboard. Importing replaces the current browser data.</p>
+          <input id="importBackupInput" type="file" accept=".json,application/json">
+          <button class="btn outline" id="importBackupBtn" style="margin-top:10px">Import Backup</button>
+        </div>
+        <div class="card">
+          <h3>Export CSV</h3>
+          <p class="note">Download spreadsheet-friendly CSV files.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn outline" onclick="exportCSV('students')">Students CSV</button>
+            <button class="btn outline" onclick="exportCSV('payments')">Payments CSV</button>
+            <button class="btn outline" onclick="exportCSV('feedback')">Feedback CSV</button>
+            <button class="btn outline" onclick="exportCSV('attendance')">Attendance CSV</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Printable Feedback</h3>
+          <p class="note">Choose a student and print their feedback history as a simple report.</p>
+          <select id="printStudentSelect"></select>
+          <button class="btn outline" id="printFeedbackBtn" style="margin-top:10px">Print Student Feedback</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Data Safety Reminder</h3>
+        <p class="note">This offline edition stores data in the browser. Export a backup regularly, especially before clearing browser data or moving to another computer.</p>
+      </div>
+    </section>
+
+    <section class="page" id="settings"><div class="premium-view-note"><strong>Trial customization:</strong> You can change and save the <b>Accent Color</b>. Other Settings options are preview-only and require the Full Version.</div>
+      <div class="page-head"><div><h1>Settings</h1><p>Customize this dashboard for your own teaching business.</p></div><div class="clock"></div></div>
+      <div class="setup-grid">
+        <div class="hero">
+          <h2>Make it yours.</h2>
+          <p>Try changing the <b>Accent Color</b> in the Trial. Dashboard name, teacher name, theme, currency, timezone, and other customization options are available in the Full Version.</p>
+          <div class="checklist">
+            <div class="check">✓ Works offline in a browser</div>
+            <div class="check">✓ Export and restore backups</div>
+            <div class="check">✓ Multi-platform student management</div>
+            <div class="check">✓ Printable feedback and CSV exports</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="full"><label>Dashboard Name</label><input id="setBrand" readonly title="Full Version feature"></div>
+            <div class="full"><label>Tagline</label><input id="setTagline" readonly title="Full Version feature"></div>
+            <div><label>Teacher Name</label><input id="setTeacher" readonly title="Full Version feature"></div>
+            <div><label>Currency Symbol</label><input id="setCurrency" maxlength="4" readonly title="Full Version feature"></div>
+            <div><label>Default Timezone</label><select id="setTimezone" title="Full Version feature"><option>Asia/Manila</option><option>Asia/Tokyo</option><option>Asia/Seoul</option><option>Asia/Shanghai</option><option>Europe/London</option><option>America/New_York</option></select></div>
+            <div><label>Theme</label><select id="setTheme" title="Full Version feature"><option value="light">Light</option><option value="dark">Dark</option></select></div>
+            <div class="full">
+              <label>Accent Color <span style="font-size:11px;color:var(--accent);font-weight:800">✓ Available in Trial</span></label>
+              <div class="swatches">
+                <button class="swatch" style="background:#f65f93" data-color="#f65f93"></button>
+                <button class="swatch" style="background:#7c5cff" data-color="#7c5cff"></button>
+                <button class="swatch" style="background:#2aa876" data-color="#2aa876"></button>
+                <button class="swatch" style="background:#ff8b2c" data-color="#ff8b2c"></button>
+                <button class="swatch" style="background:#2f80ed" data-color="#2f80ed"></button>
+              </div>
+            </div>
+            <div class="full"><button class="btn" id="saveSettings">Save Other Settings <span style="font-size:11px">🔒 Full</span></button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="printFeedbackPage">
+      <div class="print-only">
+        <h1 id="printTitle">Student Feedback Report</h1>
+        <div id="printFeedbackContent"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <h2 id="modalTitle"></h2>
+    <div id="modalContent"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" id="cancelModal">Cancel</button>
+      <button class="btn" id="saveModal">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEFAULTS={
+  settings:{
+    brand:"ESLFlow Trial",
+    tagline:"Teach • Track • Grow",
+    teacher:"Teacher",
+    currency:"₱",
+    timezone:"Asia/Manila",
+    theme:"light",
+    accent:"#f65f93"
+  },
+  platforms:["Pinecone English","Novakid","Preply","Cambly","Direct Student"],
+  students:[],
+  classes:[],
+  availability:[],
+  attendance:[],
+  feedback:[],
+  payments:[],
+  records:[]
+};
+
+let data=JSON.parse(localStorage.getItem("eslflow_sellable_v1")||"null");
+if(!data)data=structuredClone(DEFAULTS);
+Object.keys(DEFAULTS).forEach(k=>{if(data[k]===undefined)data[k]=structuredClone(DEFAULTS[k])});
+if(!data.settings)data.settings=structuredClone(DEFAULTS.settings);
+
+let modalMode=null,editId=null;
+let weekStart=getMonday(new Date());
+
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem("eslflow_sellable_v1",JSON.stringify(data));renderAll()}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function cur(n){return (data.settings.currency||"₱")+Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function uid(prefix){return prefix+"-"+Date.now()+"-"+Math.random().toString(16).slice(2,6)}
+function getMonday(d){let x=new Date(d);x.setHours(0,0,0,0);let day=x.getDay();x.setDate(x.getDate()+(day===0?-6:1-day));return x}
+function addDays(d,n){let x=new Date(d);x.setDate(x.getDate()+n);return x}
+function isoDate(d){
+  const x=new Date(d);
+  return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`
+}
+function monthKey(dateStr){return (dateStr||"").slice(0,7)}
+function fmtRange(a,b){const o={month:"short",day:"2-digit",year:"numeric"};return `${a.toLocaleDateString("en-US",o)} - ${b.toLocaleDateString("en-US",o)}`}
+function platformClass(p){p=(p||"").toLowerCase();if(p.includes("pinecone"))return"pinecone";if(p.includes("novakid"))return"novakid";if(p.includes("preply"))return"preply";if(p.includes("cambly"))return"cambly";if(p.includes("direct"))return"direct";return"other"}
+function studentById(id){return data.students.find(s=>s.id===id)}
+function statusBadge(s){const cls=s==="Paid"||s==="Present"||s==="Completed"||s==="Active"?"success":s==="Pending"||s==="Late"||s==="Trial"?"warning":"gray";return `<span class="badge ${cls}">${esc(s)}</span>`}
+function todayISO(){return isoDate(new Date())}
+
+function applySettings(){
+  document.documentElement.dataset.theme=data.settings.theme||"light";
+  document.documentElement.style.setProperty("--accent",data.settings.accent||"#f65f93");
+  $("brandName").textContent=data.settings.brand||"ESLFlow";
+  $("brandTagline").textContent=data.settings.tagline||"Teach • Track • Grow";
+  $("welcomeTitle").textContent=(data.settings.teacher||"Teacher")+" Dashboard";
+}
+function updateClocks(){
+  const tz=data.settings.timezone||"Asia/Manila",now=new Date();
+  const date=now.toLocaleDateString("en-US",{timeZone:tz,weekday:"long",year:"numeric",month:"short",day:"numeric"});
+  const time=now.toLocaleTimeString("en-US",{timeZone:tz,hour12:false});
+  document.querySelectorAll(".clock").forEach(el=>el.innerHTML=`${esc(tz)}<br><strong>${date}, ${time}</strong>`);
+}
+setInterval(updateClocks,1000);
+
+function navigate(page){
+  document.querySelectorAll(".nav-btn").forEach(x=>x.classList.toggle("active",x.dataset.page===page));
+  document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===page));
+  if(page==="schedule")renderCalendar();
+}
+document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>navigate(btn.dataset.page));
+
+function openModal(title,html,mode,id=null){
+  $("modalTitle").textContent=title;$("modalContent").innerHTML=html;
+  modalMode=mode;editId=id;$("modal").classList.add("open")
+}
+$("cancelModal").onclick=()=>$("modal").classList.remove("open");
+$("modal").onclick=e=>{if(e.target===$("modal"))$("modal").classList.remove("open")};
+
+function platformOptions(selected=""){return data.platforms.map(p=>`<option ${p===selected?"selected":""}>${esc(p)}</option>`).join("")}
+function studentOptions(selected=""){return data.students.map(s=>`<option value="${esc(s.id)}" ${s.id===selected?"selected":""}>${esc(s.name)} · ${esc(s.platform)}</option>`).join("")}
+
+function openStudentModal(id=null){
+  const s=id?studentById(id):{};
+  const next="STU-"+String(data.students.length+1).padStart(3,"0");
+  openModal(id?"Edit Student":"Add Student",`<div class="form-grid">
+    <div><label>Name</label><input id="fName" value="${esc(s.name||"")}"></div>
+    <div><label>Student ID</label><input id="fId" value="${esc(s.id||next)}"></div>
+    <div><label>Platform</label><select id="fPlatform">${platformOptions(s.platform)}</select></div>
+    <div><label>Country</label><input id="fCountry" value="${esc(s.country||"")}"></div>
+    <div><label>Timezone</label><select id="fTimezone">${["Asia/Manila","Asia/Tokyo","Asia/Seoul","Asia/Shanghai","Asia/Bangkok","Asia/Singapore","Europe/London","America/New_York","America/Los_Angeles","Australia/Sydney"].map(x=>`<option ${x===s.timezone?"selected":""}>${x}</option>`).join("")}</select></div>
+    <div><label>English Level</label><select id="fLevel">${["Beginner","Elementary","Pre-Intermediate","Intermediate","Upper-Intermediate","Advanced"].map(x=>`<option ${x===s.level?"selected":""}>${x}</option>`).join("")}</select></div>
+    <div><label>Subject / Focus</label><select id="fSubject">${["Conversational English","Speaking","Grammar","Pronunciation","Phonics","Reading","Writing","IELTS","TOEFL","Business English","Kids English","General English","Other"].map(x=>`<option ${x===s.subject?"selected":""}>${x}</option>`).join("")}</select></div>
+    <div><label>Class Duration</label><select id="fDuration">${[25,30,40,45,50,60].map(x=>`<option value="${x}" ${Number(s.duration||25)===x?"selected":""}>${x} minutes</option>`).join("")}</select></div>
+    <div><label>Rate per Class</label><input id="fRate" type="number" step=".01" value="${s.rate??100}"></div>
+    <div><label>Status</label><select id="fStudentStatus">${["Active","Trial","Paused","Inactive"].map(x=>`<option ${x===(s.status||"Active")?"selected":""}>${x}</option>`).join("")}</select></div>
+    <div><label>Start Date</label><input id="fStartDate" type="date" value="${esc(s.startDate||"")}"></div>
+    <div><label>End Date</label><input id="fEndDate" type="date" value="${esc(s.endDate||"")}"></div>
+    <div><label>Parent / Guardian</label><input id="fGuardian" value="${esc(s.guardian||"")}"></div>
+    <div><label>Contact / Email</label><input id="fContact" value="${esc(s.contact||"")}"></div>
+    <div class="full"><label>Learning Goal</label><textarea id="fGoal" rows="3">${esc(s.goal||"")}</textarea></div>
+    <div class="full"><label>Notes</label><textarea id="fNotes" rows="3">${esc(s.notes||"")}</textarea></div>
+  </div>`,id?"student-edit":"student-add",id)
+}
+
+function openClassModal(){
+  openModal("Add Class",`<div class="form-grid">
+    <div><label>Student</label><select id="fClassStudent">${studentOptions()}</select></div>
+    <div><label>Date</label><input id="fClassDate" type="date" value="${todayISO()}"></div>
+    <div><label>Start Time</label><input id="fClassTime" type="time" value="10:00"></div>
+    <div><label>Duration</label><input id="fClassDuration" type="number" value="25"></div>
+    <div><label>Status</label><select id="fClassStatus"><option>Booked</option><option>Completed</option><option>Cancelled</option><option>No Show</option></select></div>
+    <div><label>Lesson / Topic</label><input id="fClassLesson"></div>
+    <div><label>Recurring</label><select id="fRecurring"><option value="none">No</option><option value="weekly">Weekly</option></select></div>
+    <div><label>Repeat Count</label><input id="fRepeatCount" type="number" min="1" max="52" value="4"></div>
+    <div class="full"><label>Class Link / Room Note</label><input id="fClassLink"></div>
+  </div>`,"class-add")
+}
+function openAvailabilityModal(){
+  openModal("Manage Availability",`<div class="form-grid">
+    <div><label>Date</label><input id="fAvailDate" type="date" value="${todayISO()}"></div>
+    <div><label>Status</label><select id="fAvailStatus"><option>Available</option><option>Blocked</option></select></div>
+    <div><label>Start Time</label><input id="fAvailStart" type="time" value="10:00"></div>
+    <div><label>End Time</label><input id="fAvailEnd" type="time" value="10:25"></div>
+  </div>`,"availability-add")
+}
+function openAttendanceModal(){
+  openModal("Add Attendance",`<div class="form-grid">
+    <div><label>Student</label><select id="fAttStudent">${studentOptions()}</select></div>
+    <div><label>Date</label><input id="fAttDate" type="date" value="${todayISO()}"></div>
+    <div><label>Class Time</label><input id="fAttTime" type="time" value="10:00"></div>
+    <div><label>Status</label><select id="fAttStatus"><option>Present</option><option>Absent</option><option>Late</option><option>Cancelled</option><option>No Show</option></select></div>
+    <div class="full"><label>Notes</label><textarea id="fAttNotes" rows="3"></textarea></div>
+  </div>`,"attendance-add")
+}
+function openFeedbackModal(preselected=""){
+  openModal("Add Feedback",`<div class="form-grid">
+    <div><label>Student Name</label><select id="fFbStudent">${studentOptions(preselected)}</select></div>
+    <div><label>Subject</label><select id="fFbSubject">${["Speaking","Grammar","Pronunciation","Phonics","Reading","Writing","Listening","Vocabulary","Conversational English","Business English","IELTS","TOEFL","General English","Other"].map(x=>`<option>${x}</option>`).join("")}</select></div>
+    <div><label>Date</label><input id="fFbDate" type="date" value="${todayISO()}"></div>
+    <div><label>Overall Rating</label><select id="fFbRating"><option>Excellent</option><option>Very Good</option><option selected>Good</option><option>Needs Improvement</option></select></div>
+    <div class="full"><label>Strength</label><textarea id="fFbStrength" rows="3"></textarea></div>
+    <div class="full"><label>Weakness</label><textarea id="fFbWeakness" rows="3"></textarea></div>
+    <div class="full"><label>Areas to Improve</label><textarea id="fFbImprove" rows="3"></textarea></div>
+    <div class="full"><label>Teacher Comment</label><textarea id="fFbComment" rows="3"></textarea></div>
+  </div>`,"feedback-add")
+}
+function openPlatformModal(){
+  openModal("Add Platform",`<div><label>Platform Name</label><input id="fPlatformName" placeholder="e.g. QQ English"></div>`,"platform-add")
+}
+function openPaymentModal(){
+  openModal("Add Payment",`<div class="form-grid">
+    <div><label>Student</label><select id="fPayStudent">${studentOptions()}</select></div>
+    <div><label>Date</label><input id="fPayDate" type="date" value="${todayISO()}"></div>
+    <div><label>Amount</label><input id="fPayAmount" type="number" step=".01"></div>
+    <div><label>Status</label><select id="fPayStatus"><option>Paid</option><option>Pending</option></select></div>
+    <div class="full"><label>Notes</label><textarea id="fPayNotes" rows="3"></textarea></div>
+  </div>`,"payment-add")
+}
+function openRecordModal(){
+  openModal("Add Class Record",`<div class="form-grid">
+    <div><label>Student</label><select id="fRecStudent">${studentOptions()}</select></div>
+    <div><label>Date</label><input id="fRecDate" type="date" value="${todayISO()}"></div>
+    <div class="full"><label>Lesson / Material</label><input id="fRecLesson"></div>
+    <div class="full"><label>Progress / Teacher Notes</label><textarea id="fRecNotes" rows="4"></textarea></div>
+    <div class="full"><label>Homework / Next Step</label><textarea id="fRecHomework" rows="3"></textarea></div>
+  </div>`,"record-add")
+}
+
+$("saveModal").onclick=()=>{
+  if(["student-add","student-edit"].includes(modalMode)){
+    const obj={
+      name:$("fName").value.trim(),id:$("fId").value.trim(),platform:$("fPlatform").value,country:$("fCountry").value.trim(),
+      timezone:$("fTimezone").value,level:$("fLevel").value,subject:$("fSubject").value,duration:+$("fDuration").value||25,
+      rate:+$("fRate").value||0,status:$("fStudentStatus").value,startDate:$("fStartDate").value,endDate:$("fEndDate").value,
+      guardian:$("fGuardian").value.trim(),contact:$("fContact").value.trim(),goal:$("fGoal").value.trim(),notes:$("fNotes").value.trim()
+    };
+    if(!obj.name||!obj.id)return alert("Name and Student ID are required.");
+    if(modalMode==="student-add"){
+      if(data.students.some(x=>x.id===obj.id))return alert("Student ID already exists.");
+      data.students.push(obj)
+    }else{
+      const i=data.students.findIndex(x=>x.id===editId);if(i>=0)data.students[i]=obj
+    }
+  }
+  if(modalMode==="class-add"){
+    const s=studentById($("fClassStudent").value);if(!s)return alert("Add a student first.");
+    const base={id:uid("CLS"),studentId:s.id,student:s.name,platform:s.platform,date:$("fClassDate").value,time:$("fClassTime").value,duration:+$("fClassDuration").value||25,status:$("fClassStatus").value,lesson:$("fClassLesson").value.trim(),link:$("fClassLink").value.trim()};
+    data.classes.push(base);
+    if($("fRecurring").value==="weekly"){
+      const count=Math.max(1,Math.min(52,+$("fRepeatCount").value||4));
+      const d=new Date(base.date+"T00:00:00");
+      for(let i=1;i<count;i++){
+        data.classes.push({...base,id:uid("CLS"),date:isoDate(addDays(d,i*7))})
+      }
+    }
+  }
+  if(modalMode==="availability-add")data.availability.push({id:uid("AVL"),date:$("fAvailDate").value,start:$("fAvailStart").value,end:$("fAvailEnd").value,status:$("fAvailStatus").value});
+  if(modalMode==="attendance-add"){
+    const s=studentById($("fAttStudent").value);if(!s)return alert("Add a student first.");
+    data.attendance.push({id:uid("ATT"),studentId:s.id,student:s.name,platform:s.platform,date:$("fAttDate").value,time:$("fAttTime").value,status:$("fAttStatus").value,notes:$("fAttNotes").value.trim()})
+  }
+  if(modalMode==="feedback-add"){
+    const s=studentById($("fFbStudent").value);if(!s)return alert("Add a student first.");
+    data.feedback.push({id:uid("FB"),studentId:s.id,student:s.name,subject:$("fFbSubject").value,date:$("fFbDate").value,rating:$("fFbRating").value,strength:$("fFbStrength").value.trim(),weakness:$("fFbWeakness").value.trim(),improve:$("fFbImprove").value.trim(),comment:$("fFbComment").value.trim()})
+  }
+  if(modalMode==="platform-add"){const p=$("fPlatformName").value.trim();if(p&&!data.platforms.includes(p))data.platforms.push(p)}
+  if(modalMode==="payment-add"){
+    const s=studentById($("fPayStudent").value);if(!s)return alert("Add a student first.");
+    data.payments.push({id:uid("PAY"),studentId:s.id,student:s.name,platform:s.platform,date:$("fPayDate").value,amount:+$("fPayAmount").value||0,status:$("fPayStatus").value,notes:$("fPayNotes").value.trim()})
+  }
+  if(modalMode==="record-add"){
+    const s=studentById($("fRecStudent").value);if(!s)return alert("Add a student first.");
+    data.records.push({id:uid("REC"),studentId:s.id,student:s.name,date:$("fRecDate").value,lesson:$("fRecLesson").value.trim(),notes:$("fRecNotes").value.trim(),homework:$("fRecHomework").value.trim()})
+  }
+  $("modal").classList.remove("open");save()
+};
+
+function delFrom(key,id,label){
+  if(confirm(`Delete this ${label}?`)){data[key]=data[key].filter(x=>x.id!==id);save()}
+}
+function viewStudent(id){
+  const s=studentById(id),fb=data.feedback.filter(x=>x.studentId===id).length,rc=data.records.filter(x=>x.studentId===id).length;
+  openModal("Student Profile",`<div class="card">
+    <h3>${esc(s.name)}</h3>
+    <p><b>ID:</b> ${esc(s.id)} &nbsp; <b>Status:</b> ${esc(s.status)}</p>
+    <p><b>Platform:</b> ${esc(s.platform)}</p>
+    <p><b>Country:</b> ${esc(s.country)} &nbsp; <b>Timezone:</b> ${esc(s.timezone)}</p>
+    <p><b>Level:</b> ${esc(s.level)} &nbsp; <b>Subject:</b> ${esc(s.subject)}</p>
+    <p><b>Rate:</b> ${cur(s.rate)} &nbsp; <b>Duration:</b> ${s.duration} minutes</p>
+    <p><b>Start:</b> ${esc(s.startDate||"")} &nbsp; <b>End:</b> ${esc(s.endDate||"")}</p>
+    <p><b>Guardian:</b> ${esc(s.guardian||"")} &nbsp; <b>Contact:</b> ${esc(s.contact||"")}</p>
+    <p><b>Learning Goal:</b> ${esc(s.goal||"None")}</p>
+    <p><b>Notes:</b> ${esc(s.notes||"None")}</p>
+    <p><b>Feedback Entries:</b> ${fb} &nbsp; <b>Class Records:</b> ${rc}</p>
+  </div>`,"view")
+}
+window.viewStudent=viewStudent;
+window.openStudentModal=openStudentModal;
+window.openFeedbackModal=openFeedbackModal;
+window.openClassModal=openClassModal;
+window.openAvailabilityModal=openAvailabilityModal;
+window.openAttendanceModal=openAttendanceModal;
+window.openPlatformModal=openPlatformModal;
+window.openPaymentModal=openPaymentModal;
+window.openRecordModal=openRecordModal;
+window.navigate=navigate;
+window.delFrom=delFrom;
+
+$("studentSearch").oninput=renderStudents;
+$("studentPlatformFilter").onchange=renderStudents;
+$("studentLevelFilter").onchange=renderStudents;
+$("studentStatusFilter").onchange=renderStudents;
+$("paymentMonth").onchange=renderPayments;
+$("paymentStatusFilter").onchange=renderPayments;
+
+function renderStudentFilters(){
+  const pf=$("studentPlatformFilter").value,lf=$("studentLevelFilter").value;
+  $("studentPlatformFilter").innerHTML='<option value="">All Platforms</option>'+data.platforms.map(p=>`<option ${p===pf?"selected":""}>${esc(p)}</option>`).join("");
+  const levels=[...new Set(data.students.map(s=>s.level).filter(Boolean))].sort();
+  $("studentLevelFilter").innerHTML='<option value="">All Levels</option>'+levels.map(x=>`<option ${x===lf?"selected":""}>${esc(x)}</option>`).join("")
+}
+function renderStudents(){
+  const q=$("studentSearch").value.toLowerCase(),pf=$("studentPlatformFilter").value,lf=$("studentLevelFilter").value,sf=$("studentStatusFilter").value;
+  const list=data.students.filter(s=>(s.name+s.id+s.country+s.subject+s.platform).toLowerCase().includes(q)&&(!pf||s.platform===pf)&&(!lf||s.level===lf)&&(!sf||s.status===sf));
+  $("studentsBody").innerHTML=list.length?list.map(s=>`<tr>
+    <td><strong>${esc(s.name)}</strong><br><small>${esc(s.id)}</small></td>
+    <td><span class="badge">${esc(s.platform)}</span></td><td>${esc(s.country)}</td><td>${esc(s.level)}</td><td>${esc(s.subject)}</td>
+    <td>${cur(s.rate)}</td><td>${statusBadge(s.status)}</td>
+    <td>
+      <button class="action view" onclick="viewStudent('${esc(s.id)}')">View</button>
+      <button class="action edit" onclick="openStudentModal('${esc(s.id)}')">Edit</button>
+      <button class="action feedback" onclick="openFeedbackModal('${esc(s.id)}')">Feedback</button>
+      <button class="action delete" onclick="if(confirm('Delete this student?')){data.students=data.students.filter(x=>x.id!=='${esc(s.id)}');save()}">Delete</button>
+    </td>
+  </tr>`).join(""):`<tr><td colspan="8" class="empty">No students found.</td></tr>`
+}
+function renderAttendance(){
+  $("attendanceBody").innerHTML=data.attendance.length?data.attendance.slice().reverse().map(a=>`<tr>
+    <td>${esc(a.student)}</td><td>${esc(a.date)}</td><td>${esc(a.time)}</td><td>${statusBadge(a.status)}</td><td>${esc(a.platform)}</td><td>${esc(a.notes)}</td>
+    <td><button class="action delete" onclick="delFrom('attendance','${a.id}','attendance record')">Delete</button></td>
+  </tr>`).join(""):`<tr><td colspan="7" class="empty">No attendance records yet.</td></tr>`
+}
+function renderFeedback(){
+  $("feedbackBody").innerHTML=data.feedback.length?data.feedback.slice().reverse().map(f=>`<tr>
+    <td>${esc(f.student)}</td><td>${esc(f.subject)}</td><td>${esc(f.date)}</td><td>${esc(f.strength)}</td><td>${esc(f.weakness)}</td><td>${esc(f.improve)}</td><td>${esc(f.rating)}</td>
+    <td><button class="action delete" onclick="delFrom('feedback','${f.id}','feedback')">Delete</button></td>
+  </tr>`).join(""):`<tr><td colspan="8" class="empty">No feedback records yet.</td></tr>`
+}
+function renderPlatforms(){
+  $("platformGrid").innerHTML=data.platforms.map(p=>`<div class="card" style="margin:0"><h3>${esc(p)}</h3><p>${data.students.filter(s=>s.platform===p).length} student(s)</p><p>${data.classes.filter(c=>c.platform===p).length} class(es)</p></div>`).join("")
+}
+function fillPaymentMonths(){
+  const current=$("paymentMonth").value;
+  const months=[...new Set(data.payments.map(p=>monthKey(p.date)).filter(Boolean))].sort().reverse();
+  if(!months.includes(monthKey(todayISO())))months.unshift(monthKey(todayISO()));
+  $("paymentMonth").innerHTML='<option value="">All Months</option>'+months.map(m=>`<option value="${m}" ${m===current?"selected":""}>${m}</option>`).join("")
+}
+function renderPayments(){
+  const m=$("paymentMonth").value,s=$("paymentStatusFilter").value;
+  const list=data.payments.filter(p=>(!m||monthKey(p.date)===m)&&(!s||p.status===s));
+  $("paymentsBody").innerHTML=list.length?list.slice().reverse().map(p=>`<tr>
+    <td>${esc(p.student)}</td><td>${esc(p.platform)}</td><td>${esc(p.date)}</td><td>${cur(p.amount)}</td><td>${statusBadge(p.status)}</td><td>${esc(p.notes)}</td>
+    <td><button class="action delete" onclick="delFrom('payments','${p.id}','payment')">Delete</button></td>
+  </tr>`).join(""):`<tr><td colspan="7" class="empty">No payments found.</td></tr>`
+}
+function renderRecords(){
+  $("recordsBody").innerHTML=data.records.length?data.records.slice().reverse().map(r=>`<tr>
+    <td>${esc(r.student)}</td><td>${esc(r.date)}</td><td>${esc(r.lesson)}</td><td>${esc(r.notes)}</td><td>${esc(r.homework)}</td>
+    <td><button class="action delete" onclick="delFrom('records','${r.id}','class record')">Delete</button></td>
+  </tr>`).join(""):`<tr><td colspan="6" class="empty">No class records yet.</td></tr>`
+}
+function renderDashboard(){
+  const today=todayISO(),month=monthKey(today),upcoming=data.classes.filter(c=>c.date>=today&&c.status!=="Cancelled"),monthIncome=data.payments.filter(p=>monthKey(p.date)===month&&p.status==="Paid").reduce((a,b)=>a+b.amount,0);
+  const considered=data.attendance.filter(a=>!["Cancelled"].includes(a.status)),present=considered.filter(a=>["Present","Late"].includes(a.status)).length,rate=considered.length?Math.round(present/considered.length*100):0;
+  $("statStudents").textContent=data.students.length;$("statUpcoming").textContent=upcoming.length;$("statMonthIncome").textContent=cur(monthIncome);$("statAttendance").textContent=rate+"%";
+  $("upcomingList").innerHTML=upcoming.slice().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,6).map(c=>`<p><b>${esc(c.student)}</b> · ${esc(c.platform)}<br><small>${esc(c.date)} ${esc(c.time)} · ${c.duration} min · ${esc(c.lesson||c.status)}</small></p>`).join("")||'<div class="empty">No upcoming classes yet.</div>';
+  $("recentFeedback").innerHTML=data.feedback.slice(-5).reverse().map(f=>`<p><b>${esc(f.student)}</b> · ${esc(f.subject)}<br><small>${esc(f.date)} · ${esc(f.rating)}</small></p>`).join("")||'<div class="empty">No feedback yet.</div>'
+}
+function renderReports(){
+  const totalIncome=data.payments.filter(p=>p.status==="Paid").reduce((a,b)=>a+b.amount,0);
+  $("reportStudents").textContent=data.students.length;$("reportLessons").textContent=data.records.length;$("reportIncome").textContent=cur(totalIncome);
+  $("reportAvgRate").textContent=cur(data.students.length?data.students.reduce((a,b)=>a+b.rate,0)/data.students.length:0);
+  const byPlatform={};data.payments.filter(p=>p.status==="Paid").forEach(p=>byPlatform[p.platform]=(byPlatform[p.platform]||0)+p.amount);
+  $("incomeByPlatform").innerHTML=Object.entries(byPlatform).length?Object.entries(byPlatform).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<p><b>${esc(k)}</b><br><span>${cur(v)}</span></p>`).join(""):'<div class="empty">No paid income yet.</div>';
+  const byLevel={};data.students.forEach(s=>byLevel[s.level]=(byLevel[s.level]||0)+1);
+  $("studentsByLevel").innerHTML=Object.entries(byLevel).length?Object.entries(byLevel).map(([k,v])=>`<p><b>${esc(k)}</b>: ${v}</p>`).join(""):'<div class="empty">No students yet.</div>';
+  const monthly={};data.payments.filter(p=>p.status==="Paid").forEach(p=>monthly[monthKey(p.date)]=(monthly[monthKey(p.date)]||0)+p.amount);
+  $("monthlyIncome").innerHTML=Object.entries(monthly).length?`<table><thead><tr><th>Month</th><th>Income</th></tr></thead><tbody>${Object.entries(monthly).sort((a,b)=>b[0].localeCompare(a[0])).map(([m,v])=>`<tr><td>${m}</td><td>${cur(v)}</td></tr>`).join("")}</tbody></table>`:'<div class="empty">No monthly income yet.</div>'
+}
+
+function renderCalendar(){
+  const end=addDays(weekStart,6);$("weekTitle").textContent=fmtRange(weekStart,end);$("weekGrid").innerHTML="";
+  const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  $("weekGrid").insertAdjacentHTML("beforeend",`<div class="corner"></div>`);
+  for(let d=0;d<7;d++){const date=addDays(weekStart,d);$("weekGrid").insertAdjacentHTML("beforeend",`<div class="day-head">${days[d]}, ${date.toLocaleDateString("en-US",{month:"2-digit",day:"2-digit"})}</div>`)}
+  const startHour=9,endHour=21;
+  for(let h=startHour;h<endHour;h++){
+    $("weekGrid").insertAdjacentHTML("beforeend",`<div class="time-cell">${String(h).padStart(2,"0")}:00</div>`);
+    for(let d=0;d<7;d++){const date=isoDate(addDays(weekStart,d));$("weekGrid").insertAdjacentHTML("beforeend",`<div class="slot" id="cell-${date}-${h}"></div>`)}
+  }
+  data.availability.forEach(a=>{
+    const dt=new Date(a.date+"T00:00:00");if(dt<weekStart||dt>end)return;
+    const [hh,mm]=a.start.split(":").map(Number);if(hh<startHour||hh>=endHour)return;
+    const cell=$(`cell-${a.date}-${hh}`);if(!cell)return;
+    const endm=(+a.end.split(":")[0])*60+(+a.end.split(":")[1]),dur=Math.max(25,endm-(hh*60+mm));
+    const div=document.createElement("div");div.className=`event ${a.status==="Available"?"available":"blocked"}`;div.style.top=((mm/60)*48+3)+"px";div.style.height=Math.max(36,(dur/60)*48-6)+"px";div.textContent=a.status.toUpperCase();cell.appendChild(div)
+  });
+  data.classes.forEach(c=>{
+    const dt=new Date(c.date+"T00:00:00");if(dt<weekStart||dt>end)return;
+    const [hh,mm]=c.time.split(":").map(Number);if(hh<startHour||hh>=endHour)return;
+    const cell=$(`cell-${c.date}-${hh}`);if(!cell)return;
+    const total=hh*60+mm+Number(c.duration||25),eh=Math.floor(total/60),em=total%60;
+    const div=document.createElement("div");div.className=`event ${platformClass(c.platform)}`;div.style.top=((mm/60)*48+3)+"px";div.style.height=Math.max(38,(Number(c.duration||25)/60)*48-6)+"px";
+    div.innerHTML=`<small>${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")} - ${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}</small><strong>${esc(c.student)}</strong><small>${esc(c.platform)} · ${esc(c.lesson||c.status)}</small>`;cell.appendChild(div)
+  })
+}
+$("prevWeek").onclick=()=>{weekStart=addDays(weekStart,-7);renderCalendar()};
+$("nextWeek").onclick=()=>{weekStart=addDays(weekStart,7);renderCalendar()};
+$("todayWeek").onclick=()=>{weekStart=getMonday(new Date());renderCalendar()};
+$("copySlots").onclick=async()=>{
+  const end=addDays(weekStart,6);
+  const text=data.availability.filter(a=>{const d=new Date(a.date+"T00:00:00");return d>=weekStart&&d<=end&&a.status==="Available"}).map(a=>`${a.date} ${a.start}-${a.end}`).join("\n")||"No available slots set for this week.";
+  try{await navigator.clipboard.writeText(text);alert("Available slots copied.")}catch{alert(text)}
+};
+
+function renderBackupSelectors(){
+  $("printStudentSelect").innerHTML=data.students.length?studentOptions():'<option value="">No students yet</option>'
+}
+$("exportBackup").onclick=()=>{
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`ESLFlow_Backup_${todayISO()}.json`;a.click();URL.revokeObjectURL(a.href)
+};
+$("importBackupBtn").onclick=()=>{
+  const f=$("importBackupInput").files[0];if(!f)return alert("Choose a JSON backup file first.");
+  const r=new FileReader();r.onload=()=>{try{const imported=JSON.parse(r.result);if(!imported.students||!imported.settings)throw new Error();if(confirm("Replace current dashboard data with this backup?")){data=imported;save();alert("Backup restored.")}}catch{alert("This does not look like a valid ESLFlow backup.")}};r.readAsText(f)
+};
+function csvEscape(v){const s=String(v??"");return /[",\n]/.test(s)?`"${s.replaceAll('"','""')}"`:s}
+window.exportCSV=function(type){
+  const map={
+    students:{rows:data.students,cols:["id","name","platform","country","timezone","level","subject","duration","rate","status","startDate","endDate","guardian","contact","goal","notes"]},
+    payments:{rows:data.payments,cols:["student","platform","date","amount","status","notes"]},
+    feedback:{rows:data.feedback,cols:["student","subject","date","rating","strength","weakness","improve","comment"]},
+    attendance:{rows:data.attendance,cols:["student","platform","date","time","status","notes"]}
+  };
+  const cfg=map[type],csv=[cfg.cols.join(","),...cfg.rows.map(r=>cfg.cols.map(c=>csvEscape(r[c])).join(","))].join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`ESLFlow_${type}_${todayISO()}.csv`;a.click();URL.revokeObjectURL(a.href)
+};
+$("printFeedbackBtn").onclick=()=>{
+  const id=$("printStudentSelect").value,s=studentById(id);if(!s)return alert("Choose a student.");
+  const list=data.feedback.filter(f=>f.studentId===id).sort((a,b)=>b.date.localeCompare(a.date));
+  $("printTitle").textContent=`${s.name} - Feedback Report`;
+  $("printFeedbackContent").innerHTML=`<p><b>Student ID:</b> ${esc(s.id)} | <b>Platform:</b> ${esc(s.platform)} | <b>Level:</b> ${esc(s.level)}</p>`+
+    (list.length?list.map(f=>`<div style="margin:20px 0;border-top:1px solid #ccc;padding-top:12px"><h3>${esc(f.date)} · ${esc(f.subject)} · ${esc(f.rating)}</h3><p><b>Strength:</b> ${esc(f.strength)}</p><p><b>Weakness:</b> ${esc(f.weakness)}</p><p><b>Areas to Improve:</b> ${esc(f.improve)}</p><p><b>Teacher Comment:</b> ${esc(f.comment)}</p></div>`).join(""):"<p>No feedback records yet.</p>");
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("print-target"));$("printFeedbackPage").classList.add("print-target");window.print()
+};
+
+function loadSettingsUI(){
+  $("setBrand").value=data.settings.brand;$("setTagline").value=data.settings.tagline;$("setTeacher").value=data.settings.teacher;$("setCurrency").value=data.settings.currency;$("setTimezone").value=data.settings.timezone;$("setTheme").value=data.settings.theme
+}
+document.querySelectorAll(".swatch").forEach(b=>b.onclick=()=>{
+  data.settings.accent=b.dataset.color;
+  localStorage.setItem("eslflow_trial_demo_v1",JSON.stringify(data));
+  applySettings();
+});
+$("saveSettings").onclick=()=>{
+  data.settings.brand=$("setBrand").value.trim()||"ESLFlow";
+  data.settings.tagline=$("setTagline").value.trim()||"Teach • Track • Grow";
+  data.settings.teacher=$("setTeacher").value.trim()||"Teacher";
+  data.settings.currency=$("setCurrency").value.trim()||"₱";
+  data.settings.timezone=$("setTimezone").value;
+  data.settings.theme=$("setTheme").value;
+  save();alert("Settings saved.")
+};
+
+function renderAll(){
+  applySettings();updateClocks();renderStudentFilters();renderStudents();renderAttendance();renderFeedback();renderPlatforms();fillPaymentMonths();renderPayments();renderRecords();renderDashboard();renderReports();renderCalendar();renderBackupSelectors();loadSettingsUI()
+}
+renderAll();
+</script>
+
+<script>
+/* ESLFlow Trial Demo */
+const TRIAL_KEY = "eslflow_trial_demo_v1";
+const TRIAL_LIMITS = {
+  students:3,
+  classes:3,
+  availability:3,
+  attendance:3,
+  feedback:3,
+  payments:3,
+  records:3
+};
+
+function showTrialUpgrade(){
+  const el=document.getElementById("trialOverlay");
+  if(el) el.classList.add("open");
+}
+function hideTrialUpgrade(){
+  const el=document.getElementById("trialOverlay");
+  if(el) el.classList.remove("open");
+}
+function purchaseInfo(){
+  alert("ESLFlow Full Version is ₱299 as a one-time purchase. Connect this button to your checkout or payment/contact page before launch.");
+}
+function resetTrial(){
+  if(confirm("Reset the trial and erase all trial data?")){
+    localStorage.removeItem(TRIAL_KEY);
+    location.reload();
+  }
+}
+window.showTrialUpgrade=showTrialUpgrade;
+window.hideTrialUpgrade=hideTrialUpgrade;
+window.purchaseInfo=purchaseInfo;
+window.resetTrial=resetTrial;
+
+(function(){
+  /* Separate trial storage from the paid/full dashboard storage. */
+  const originalSave = window.save;
+  if(typeof data !== "undefined"){
+    const stored = localStorage.getItem(TRIAL_KEY);
+    if(stored){
+      try{ data = JSON.parse(stored); }catch(e){}
+    } else {
+      /* Start clean for the customer's own trial data. */
+      data = JSON.parse(JSON.stringify(DEFAULTS));
+      data.students=[];
+      data.classes=[];
+      data.availability=[];
+      data.attendance=[];
+      data.feedback=[];
+      data.payments=[];
+      data.records=[];
+      localStorage.setItem(TRIAL_KEY,JSON.stringify(data));
+    }
+  }
+
+  window.save = function(){
+    localStorage.setItem(TRIAL_KEY,JSON.stringify(data));
+    if(typeof renderAll==="function") renderAll();
+  };
+  save = window.save;
+
+  function atLimit(key){
+    return Array.isArray(data[key]) && data[key].length >= TRIAL_LIMITS[key];
+  }
+
+  function blockIfLimit(key){
+    if(atLimit(key)){
+      showTrialUpgrade();
+      return true;
+    }
+    return false;
+  }
+
+  const originals = {};
+
+  if(typeof openStudentModal==="function"){
+    originals.openStudentModal=openStudentModal;
+    window.openStudentModal=function(id=null){
+      if(!id && blockIfLimit("students")) return;
+      return originals.openStudentModal(id);
+    };
+    openStudentModal=window.openStudentModal;
+  }
+  if(typeof openClassModal==="function"){
+    originals.openClassModal=openClassModal;
+    window.openClassModal=function(){
+      if(blockIfLimit("classes")) return;
+      return originals.openClassModal();
+    };
+    openClassModal=window.openClassModal;
+  }
+  if(typeof openAvailabilityModal==="function"){
+    originals.openAvailabilityModal=openAvailabilityModal;
+    window.openAvailabilityModal=function(){
+      if(blockIfLimit("availability")) return;
+      return originals.openAvailabilityModal();
+    };
+    openAvailabilityModal=window.openAvailabilityModal;
+  }
+  if(typeof openAttendanceModal==="function"){
+    originals.openAttendanceModal=openAttendanceModal;
+    window.openAttendanceModal=function(){
+      if(blockIfLimit("attendance")) return;
+      return originals.openAttendanceModal();
+    };
+    openAttendanceModal=window.openAttendanceModal;
+  }
+  if(typeof openFeedbackModal==="function"){
+    originals.openFeedbackModal=openFeedbackModal;
+    window.openFeedbackModal=function(studentId=null){
+      if(blockIfLimit("feedback")) return;
+      return originals.openFeedbackModal(studentId);
+    };
+    openFeedbackModal=window.openFeedbackModal;
+  }
+  if(typeof openPaymentModal==="function"){
+    originals.openPaymentModal=openPaymentModal;
+    window.openPaymentModal=function(){
+      if(blockIfLimit("payments")) return;
+      return originals.openPaymentModal();
+    };
+    openPaymentModal=window.openPaymentModal;
+  }
+  if(typeof openRecordModal==="function"){
+    originals.openRecordModal=openRecordModal;
+    window.openRecordModal=function(){
+      if(blockIfLimit("records")) return;
+      return originals.openRecordModal();
+    };
+    openRecordModal=window.openRecordModal;
+  }
+
+  /* Recurring classes are disabled in Trial because one action could exceed the 3-class cap. */
+  const originalClassModal = originals.openClassModal;
+  if(originalClassModal){
+    window.openClassModal=function(){
+      if(blockIfLimit("classes")) return;
+      originalClassModal();
+      setTimeout(()=>{
+        const recurring=document.getElementById("fRecurring");
+        const count=document.getElementById("fRepeatCount");
+        if(recurring){
+          recurring.value="none";
+          recurring.disabled=true;
+        }
+        if(count) count.disabled=true;
+      },0);
+    };
+    openClassModal=window.openClassModal;
+  }
+
+  /* Lock premium-only tools. */
+  const lockIds = [
+    "exportBackupBtn","importBackupBtn","exportStudentsBtn","exportPaymentsBtn",
+    "exportFeedbackBtn","exportAttendanceBtn","printFeedbackBtn","saveSettingsBtn"
+  ];
+  lockIds.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){
+      el.disabled=false;
+      el.classList.remove("premium-lock");
+      el.addEventListener("click",function(e){
+        e.preventDefault();e.stopImmediatePropagation();showTrialUpgrade();
+      },true);
+    }
+  });
+
+  /* Lock platform creation in trial, but keep built-in platforms available. */
+  document.addEventListener("click",function(e){
+    const btn=e.target.closest("button");
+    if(!btn)return;
+    const txt=(btn.textContent||"").trim().toLowerCase();
+    if(txt.includes("add platform")){
+      e.preventDefault();e.stopImmediatePropagation();showTrialUpgrade();
+    }
+  },true);
+
+  /* Lock settings form edits. */
+  document.querySelectorAll("#settings input,#settings select,#settings textarea").forEach(el=>{
+    el.addEventListener("focus",()=>showTrialUpgrade(),true);
+  });
+
+  /* Ensure a recurring class save cannot sneak past the class limit. */
+  const oldSaveHandler = document.getElementById("saveModal").onclick;
+  document.getElementById("saveModal").onclick = function(e){
+    const mode = typeof modalMode!=="undefined" ? modalMode : "";
+    const mapping = {
+      "student-add":"students",
+      "class-add":"classes",
+      "availability-add":"availability",
+      "attendance-add":"attendance",
+      "feedback-add":"feedback",
+      "payment-add":"payments",
+      "record-add":"records"
+    };
+    const key=mapping[mode];
+    if(key && atLimit(key)){
+      showTrialUpgrade();
+      return;
+    }
+    oldSaveHandler.call(this,e);
+    localStorage.setItem(TRIAL_KEY,JSON.stringify(data));
+  };
+
+  localStorage.setItem(TRIAL_KEY,JSON.stringify(data));
+  if(typeof renderAll==="function") renderAll();
+
+  const ov=document.getElementById("trialOverlay");
+  if(ov)ov.addEventListener("click",e=>{if(e.target===ov)hideTrialUpgrade()});
+})();
+</script>
+
+
+<script>
+/* Viewable premium sections for Trial */
+(function(){
+  function premiumPrompt(section){
+    const overlay=document.getElementById("trialOverlay");
+    if(overlay){
+      const h=overlay.querySelector("h2");
+      const p=overlay.querySelector("p");
+      if(h) h.textContent=section+" is available in the Full Version 💗";
+      if(p) p.textContent="You can preview this section in the Trial, but using or changing this feature requires ESLFlow Full Version.";
+    }
+    showTrialUpgrade();
+  }
+
+  /* Mark navigation items but DO NOT block navigation. */
+  document.querySelectorAll('.nav-btn[data-page="backup"],.nav-btn[data-page="settings"]').forEach(btn=>{
+    if(!btn.querySelector(".full-only-tag")){
+      const tag=document.createElement("small");
+      tag.className="full-only-tag";
+      tag.textContent="FULL";
+      btn.appendChild(tag);
+    }
+    btn.title="Preview available in Trial • Actions require Full Version";
+  });
+
+  /* Backup & Export: allow page viewing, block every action button inside it. */
+  const backup=document.getElementById("backup");
+  if(backup){
+    backup.querySelectorAll("button").forEach(btn=>{
+      btn.disabled=false;
+      btn.classList.remove("premium-lock");
+      btn.style.pointerEvents="auto";
+      btn.addEventListener("click",function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        premiumPrompt("Backup & Export");
+      },true);
+    });
+    backup.querySelectorAll("input[type=file]").forEach(inp=>{
+      inp.addEventListener("click",function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        premiumPrompt("Backup & Export");
+      },true);
+    });
+  }
+
+  /* Settings: Accent Color is enabled in Trial; all other customization stays locked. */
+  const settings=document.getElementById("settings");
+  if(settings){
+    settings.querySelectorAll("input,select,textarea").forEach(el=>{
+      const originalValue=el.value;
+      const originalChecked=el.checked;
+
+      const block=function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if("checked" in el) el.checked=originalChecked;
+        el.value=originalValue;
+        premiumPrompt("Settings");
+        try{el.blur()}catch(_){}
+      };
+
+      el.addEventListener("mousedown",block,true);
+      el.addEventListener("keydown",block,true);
+      el.addEventListener("change",block,true);
+    });
+
+    settings.querySelectorAll("button:not(.swatch)").forEach(btn=>{
+      btn.disabled=false;
+      btn.classList.remove("premium-lock");
+      btn.style.pointerEvents="auto";
+      btn.addEventListener("click",function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        premiumPrompt("Settings");
+      },true);
+    });
+
+    /* Keep Accent Color swatches fully interactive in the Trial. */
+    settings.querySelectorAll(".swatch").forEach(btn=>{
+      btn.disabled=false;
+      btn.classList.remove("premium-lock");
+      btn.style.pointerEvents="auto";
+      btn.setAttribute("title","Available in Trial");
+    });
+  }
+
+  /* Ensure generic quick-action Backup Data still navigates to the preview instead of being blocked. */
+  document.querySelectorAll('button[onclick*="navigate(\'backup\')"],button[onclick*=\'navigate("backup")\']').forEach(btn=>{
+    btn.addEventListener("click",function(e){
+      e.stopImmediatePropagation();
+      if(typeof navigate==="function") navigate("backup");
+    },true);
+  });
+})();
+</script>
+
+
+<script>
+/* ESLFlow Trial Schedule hotfix: local dates + accurate 25/50-minute rendering */
+(function(){
+  /* Add Class: common ESL durations and auto-pick the selected student's saved duration. */
+  window.openClassModal=function(){
+    if(typeof data!=="undefined" && Array.isArray(data.classes) && data.classes.length>=3){
+      showTrialUpgrade(); return;
+    }
+    openModal("Add Class",`<div class="form-grid">
+      <div><label>Student</label><select id="fClassStudent">${studentOptions()}</select></div>
+      <div><label>Date</label><input id="fClassDate" type="date" value="${todayISO()}"></div>
+      <div><label>Start Time</label><input id="fClassTime" type="time" value="10:00"></div>
+      <div><label>Duration</label><select id="fClassDuration">${[25,30,40,45,50,60,90,120].map(x=>`<option value="${x}">${x} minutes</option>`).join("")}</select></div>
+      <div><label>Status</label><select id="fClassStatus"><option>Booked</option><option>Completed</option><option>Cancelled</option><option>No Show</option></select></div>
+      <div><label>Lesson / Topic</label><input id="fClassLesson"></div>
+      <div><label>Recurring</label><select id="fRecurring" disabled><option value="none">No — Full Version only</option></select></div>
+      <div><label>Repeat Count</label><input id="fRepeatCount" type="number" value="1" disabled></div>
+      <div class="full"><label>Class Link / Room Note</label><input id="fClassLink"></div>
+    </div>`,"class-add");
+
+    const sel=$("fClassStudent"), dur=$("fClassDuration");
+    function syncDuration(){
+      const s=studentById(sel.value);
+      const mins=Number(s&&s.duration||25);
+      if([...dur.options].some(o=>Number(o.value)===mins)) dur.value=String(mins);
+      else{
+        const opt=document.createElement("option");
+        opt.value=String(mins); opt.textContent=mins+" minutes"; dur.appendChild(opt); dur.value=String(mins);
+      }
+    }
+    sel.addEventListener("change",syncDuration);
+    syncDuration();
+  };
+  openClassModal=window.openClassModal;
+
+  /* Edit Class: keep duration explicit and easy to verify. */
+  window.openClassEditModal=function(id){
+    const c=data.classes.find(x=>x.id===id); if(!c)return;
+    const d=Number(c.duration||25);
+    openModal("Edit Class",`<div class="form-grid">
+      <div><label>Student</label><select id="fClassStudent">${studentOptions(c.studentId)}</select></div>
+      <div><label>Date</label><input id="fClassDate" type="date" value="${esc(c.date)}"></div>
+      <div><label>Start Time</label><input id="fClassTime" type="time" value="${esc(c.time)}"></div>
+      <div><label>Duration</label><select id="fClassDuration">${[25,30,40,45,50,60,90,120].map(x=>`<option value="${x}" ${d===x?"selected":""}>${x} minutes</option>`).join("")}${![25,30,40,45,50,60,90,120].includes(d)?`<option value="${d}" selected>${d} minutes</option>`:""}</select></div>
+      <div><label>Status</label><select id="fClassStatus">${["Booked","Completed","Cancelled","No Show"].map(x=>`<option ${x===c.status?"selected":""}>${x}</option>`).join("")}</select></div>
+      <div><label>Lesson / Topic</label><input id="fClassLesson" value="${esc(c.lesson||"")}"></div>
+      <div class="full"><label>Class Link / Room Note</label><input id="fClassLink" value="${esc(c.link||"")}"></div>
+    </div>`,"class-edit",id);
+  };
+  openClassEditModal=window.openClassEditModal;
+
+  /* Accurate weekly calendar, including early/late ESL classes and 25/50-minute block heights. */
+  window.renderCalendar=function(){
+    const end=addDays(weekStart,6);
+    const weekStartISO=isoDate(weekStart), weekEndISO=isoDate(end);
+    $("weekTitle").textContent=fmtRange(weekStart,end);$("weekGrid").innerHTML="";
+    const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    $("weekGrid").insertAdjacentHTML("beforeend",`<div class="corner"></div>`);
+    for(let d=0;d<7;d++){
+      const date=addDays(weekStart,d);
+      $("weekGrid").insertAdjacentHTML("beforeend",`<div class="day-head">${days[d]}, ${date.toLocaleDateString("en-US",{month:"2-digit",day:"2-digit"})}</div>`)
+    }
+
+    const weekClasses=data.classes.filter(c=>c.date>=weekStartISO&&c.date<=weekEndISO);
+    const weekAvail=data.availability.filter(a=>a.date>=weekStartISO&&a.date<=weekEndISO);
+
+    const starts=[
+      ...weekClasses.map(c=>Number((c.time||"06:00").split(":")[0])),
+      ...weekAvail.map(a=>Number((a.start||"06:00").split(":")[0]))
+    ].filter(Number.isFinite);
+
+    const ends=[
+      ...weekClasses.map(c=>{
+        const [h,m]=(c.time||"00:00").split(":").map(Number);
+        return Math.ceil((h*60+m+Number(c.duration||25))/60);
+      }),
+      ...weekAvail.map(a=>{
+        const [h,m]=(a.end||"00:00").split(":").map(Number);
+        return Math.ceil((h*60+m)/60);
+      })
+    ].filter(Number.isFinite);
+
+    const startHour=Math.max(0,Math.min(6,starts.length?Math.min(...starts):6));
+    const endHour=Math.min(24,Math.max(23,ends.length?Math.max(...ends):23));
+    const rowPx=96;
+
+    for(let h=startHour;h<endHour;h++){
+      $("weekGrid").insertAdjacentHTML("beforeend",`<div class="time-cell">${String(h).padStart(2,"0")}:00</div>`);
+      for(let d=0;d<7;d++){
+        const date=isoDate(addDays(weekStart,d));
+        $("weekGrid").insertAdjacentHTML("beforeend",`<div class="slot" id="cell-${date}-${h}"></div>`);
+      }
+    }
+
+    weekAvail.forEach(a=>{
+      const [hh,mm]=(a.start||"00:00").split(":").map(Number); if(hh<startHour||hh>=endHour)return;
+      const cell=$(`cell-${a.date}-${hh}`); if(!cell)return;
+      const [ehh,emm]=(a.end||a.start||"00:00").split(":").map(Number);
+      let dur=(ehh*60+emm)-(hh*60+mm); if(dur<=0)dur=25;
+      const div=document.createElement("div"); div.className=`event ${a.status==="Available"?"available":"blocked"}`;
+      div.style.top=((mm/60)*rowPx+2)+"px";
+      div.style.height=Math.max(28,(dur/60)*rowPx-4)+"px";
+      div.innerHTML=`<strong>${esc(a.status.toUpperCase())}</strong><small>${esc(a.start)}-${esc(a.end)}</small>`;
+      cell.appendChild(div);
+    });
+
+    weekClasses.forEach(c=>{
+      const [hh,mm]=(c.time||"00:00").split(":").map(Number); if(hh<startHour||hh>=endHour)return;
+      const cell=$(`cell-${c.date}-${hh}`); if(!cell)return;
+      const duration=Number(c.duration||25);
+      const total=hh*60+mm+duration;
+      const dayOffset=Math.floor(total/1440);
+      const endMin=((total%1440)+1440)%1440;
+      const eh=Math.floor(endMin/60), em=endMin%60;
+
+      const div=document.createElement("div"); div.className=`event ${platformClass(c.platform)}`;
+      div.style.top=((mm/60)*rowPx+2)+"px";
+      div.style.height=Math.max(36,(duration/60)*rowPx-4)+"px";
+      const endLabel=`${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}${dayOffset?" (+1 day)":""}`;
+      div.innerHTML=`<small>${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")} - ${endLabel}</small><strong>${esc(c.student)}</strong><small>${esc(c.platform)} · ${esc(c.lesson||c.status)} · ${duration} min</small>`;
+      cell.appendChild(div);
+    });
+  };
+  renderCalendar=window.renderCalendar;
+
+  /* Re-render current week with corrected logic immediately. */
+  if(typeof renderCalendar==="function") renderCalendar();
+})();
+</script>
+
+
+<script id="eslflow-mobile-reminder-js">
+(function(){
+  const IS_TRIAL=!!document.querySelector(".trial-banner");
+  const PREF_KEY="eslflow_reminder_prefs_v1";
+  const SENT_KEY="eslflow_reminder_sent_v2";
+  let reminderTimer=null;
+
+  function prefs(){
+    try{return Object.assign({lead:15,browserAlerts:false},JSON.parse(localStorage.getItem(PREF_KEY)||"{}"))}
+    catch{return {lead:15,browserAlerts:false}}
+  }
+  function savePrefs(p){localStorage.setItem(PREF_KEY,JSON.stringify(p))}
+  function sentMap(){
+    try{return JSON.parse(localStorage.getItem(SENT_KEY)||"{}")}
+    catch{return {}}
+  }
+  function saveSent(x){localStorage.setItem(SENT_KEY,JSON.stringify(x))}
+  function classDate(c){
+    if(!c||!c.date||!c.time)return null;
+    const d=new Date(c.date+"T"+c.time+":00");
+    return Number.isNaN(d.getTime())?null:d;
+  }
+  function minutesUntil(c,now=new Date()){
+    const d=classDate(c); return d?(d.getTime()-now.getTime())/60000:Infinity;
+  }
+  function nextClass(){
+    const now=new Date();
+    return (data.classes||[])
+      .filter(c=>!["Cancelled","Completed","No Show"].includes(c.status))
+      .map(c=>({c,m:minutesUntil(c,now)}))
+      .filter(x=>x.m>=-1)
+      .sort((a,b)=>a.m-b.m)[0]||null;
+  }
+  function fmtMins(m){
+    const n=Math.max(0,Math.ceil(m));
+    if(n<60)return n+" min";
+    const h=Math.floor(n/60),r=n%60;
+    return h+" hr"+(h===1?"":"s")+(r?" "+r+" min":"");
+  }
+  function browserAlertState(){
+    if(!("Notification" in window))return "unsupported";
+    return Notification.permission; // default | granted | denied
+  }
+  function syncBrowserPref(){
+    const state=browserAlertState();
+    const p=prefs();
+    // If the browser already grants notifications, keep ESLFlow's preference in sync.
+    if(state==="granted" && !p.browserAlerts){
+      p.browserAlerts=true; savePrefs(p);
+    }
+    if(state==="denied" && p.browserAlerts){
+      p.browserAlerts=false; savePrefs(p);
+    }
+    return state;
+  }
+  function setAlertButton(){
+    const btn=document.getElementById("enableBrowserAlerts");
+    if(!btn)return;
+    const state=syncBrowserPref();
+    if(state==="granted"){
+      btn.textContent="Test Alert";
+      btn.title="Browser alerts are enabled. Click to send a test notification.";
+    }else if(state==="denied"){
+      btn.textContent="Alerts Blocked";
+      btn.title="Allow notifications in your browser's site settings, then reload ESLFlow.";
+    }else if(state==="unsupported"){
+      btn.textContent="Not Supported";
+      btn.title="This browser/device does not support page notifications here.";
+    }else{
+      btn.textContent="Enable Alerts";
+      btn.title="Allow ESLFlow to show browser/system class reminders.";
+    }
+  }
+  function showSystemNotification(title,body,tag){
+    if(browserAlertState()!=="granted")return false;
+    try{
+      const n=new Notification(title,{
+        body,
+        tag:tag||("eslflow-"+Date.now()),
+        renotify:true,
+        requireInteraction:false
+      });
+      // Some desktop browsers focus the app when the notification is clicked.
+      n.onclick=()=>{try{window.focus();n.close()}catch{}};
+      return true;
+    }catch(err){
+      console.warn("ESLFlow notification could not be displayed:",err);
+      return false;
+    }
+  }
+  function injectReminderUI(){
+    if(document.getElementById("reminderCenter"))return;
+    const dash=document.getElementById("dashboard");
+    if(!dash)return;
+    const head=dash.querySelector(".page-head");
+    const box=document.createElement("div");
+    box.id="reminderCenter"; box.className="reminder-center";
+    box.innerHTML=`
+      <div class="reminder-top">
+        <div>
+          <div class="reminder-title"><span class="bell">🔔</span> Class Reminder</div>
+          <div class="reminder-sub">Keep ESLFlow open for reliable in-dashboard reminders. Browser/system alerts are optional and depend on your browser and device settings.</div>
+        </div>
+        <div class="reminder-controls">
+          <select id="reminderLead" aria-label="Reminder time">
+            ${[5,10,15,30,60].map(x=>`<option value="${x}">${x===60?"1 hour":x+" min"} before</option>`).join("")}
+          </select>
+          <button type="button" class="btn outline" id="enableBrowserAlerts">Enable Alerts</button>
+        </div>
+      </div>
+      <div class="reminder-status" id="reminderStatus">Checking your next class…</div>`;
+    head.insertAdjacentElement("afterend",box);
+    const p=prefs();
+    document.getElementById("reminderLead").value=String(p.lead||15);
+    document.getElementById("reminderLead").addEventListener("change",e=>{
+      const q=prefs();q.lead=Number(e.target.value)||15;savePrefs(q);updateReminderStatus();reminderTick();
+    });
+    document.getElementById("enableBrowserAlerts").addEventListener("click",async()=>{
+      const state=browserAlertState();
+
+      if(state==="unsupported"){
+        toast("Browser alerts not supported","In-dashboard reminders will still work while ESLFlow stays open.");
+        setAlertButton();
+        return;
+      }
+
+      if(state==="denied"){
+        toast("Browser alerts are blocked","Open this site's browser settings, set Notifications to Allow, then reload ESLFlow.");
+        setAlertButton();
+        return;
+      }
+
+      if(state==="granted"){
+        const q=prefs();q.browserAlerts=true;savePrefs(q);
+        toast("Test reminder","If system notifications are allowed, you should also receive a browser notification now.");
+        const shown=showSystemNotification(
+          "ESLFlow notifications are ready 🔔",
+          "Class reminders are enabled. Keep ESLFlow open for reliable reminders.",
+          "eslflow-test"
+        );
+        if(!shown){
+          toast("System alert could not be displayed","Check Windows/macOS notification settings. In-dashboard reminders will still work.");
+        }
+        setAlertButton();
+        return;
+      }
+
+      try{
+        const permission=await Notification.requestPermission();
+        const q=prefs();q.browserAlerts=permission==="granted";savePrefs(q);
+        if(permission==="granted"){
+          toast("Alerts enabled","A test browser notification should appear now.");
+          const shown=showSystemNotification(
+            "ESLFlow notifications are ready 🔔",
+            "Class reminders are enabled. Keep ESLFlow open for reliable reminders.",
+            "eslflow-test"
+          );
+          if(!shown){
+            toast("System alert could not be displayed","Check your operating-system notification settings. In-dashboard reminders will still work.");
+          }
+        }else{
+          toast("Alerts not enabled","You can still receive in-dashboard reminders while ESLFlow is open.");
+        }
+      }catch(err){
+        console.warn("Notification permission error:",err);
+        toast("Browser alerts could not be enabled","In-dashboard reminders will still work while ESLFlow is open.");
+      }
+      setAlertButton();
+      updateReminderStatus();
+    });
+    setAlertButton();
+  }
+  function toast(title,detail){
+    let t=document.getElementById("eslflowToast");
+    if(!t){
+      t=document.createElement("div");t.id="eslflowToast";t.className="eslflow-toast";
+      document.body.appendChild(t);
+    }
+    t.innerHTML=`<strong>${esc(title)}</strong><small>${esc(detail)}</small>`;
+    t.classList.add("show");
+    clearTimeout(t._hide);t._hide=setTimeout(()=>t.classList.remove("show"),11000);
+  }
+  function notifyClass(c,lead,remaining){
+    const key=[c.id,c.date,c.time,lead].join("|");
+    const sent=sentMap();
+    if(sent[key])return;
+
+    const mins=Math.max(0,Math.ceil(remaining));
+    const when=mins<=1?"starting very soon":`in ${mins} minutes`;
+    const msg=`${c.student} • ${c.time} • ${c.platform||"Class"}${c.lesson?" • "+c.lesson:""}`;
+
+    // Always show the in-dashboard reminder first.
+    toast(`Class ${when}`,msg);
+
+    const p=prefs();
+    let browserShown=false;
+    if(p.browserAlerts && browserAlertState()==="granted"){
+      browserShown=showSystemNotification(`ESLFlow: class ${when}`,msg,key);
+    }
+
+    // Mark as sent after the reminder attempt so a rendering exception cannot silently consume it.
+    sent[key]=Date.now();
+    Object.keys(sent).forEach(k=>{if(Date.now()-sent[k]>14*86400000)delete sent[k]});
+    saveSent(sent);
+
+    if(p.browserAlerts && browserAlertState()==="granted" && !browserShown){
+      console.warn("ESLFlow: browser notification attempt failed; dashboard toast was shown.");
+    }
+  }
+  function updateReminderStatus(){
+    const el=document.getElementById("reminderStatus");if(!el)return;
+    const n=nextClass(),p=prefs();
+    if(!n){
+      el.innerHTML="No upcoming booked classes found. Add a class in <strong>Schedule</strong> and ESLFlow will watch it while this page is open.";
+      return;
+    }
+    const d=classDate(n.c);
+    const dateText=d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+    const state=browserAlertState();
+    const alertText=state==="granted"
+      ?"Browser alerts: <strong>enabled</strong>."
+      : state==="denied"
+        ?"Browser alerts: <strong>blocked</strong>."
+        : state==="unsupported"
+          ?"Browser alerts: <strong>not supported here</strong>."
+          :"Browser alerts: <strong>not enabled</strong>.";
+    el.innerHTML=`Next: <strong>${esc(n.c.student)}</strong> on ${esc(dateText)} at <strong>${esc(n.c.time)}</strong> (${fmtMins(n.m)} from now). Reminder: ${p.lead} min before class. ${alertText}`;
+  }
+  function reminderTick(){
+    injectReminderUI();setAlertButton();updateReminderStatus();
+    const p=prefs(), now=new Date();
+    (data.classes||[]).forEach(c=>{
+      if(["Cancelled","Completed","No Show"].includes(c.status))return;
+      const m=minutesUntil(c,now);
+      // Trigger any time after the chosen reminder point and before class.
+      // This avoids missing reminders when a background tab is temporarily throttled.
+      if(m>=0 && m<=p.lead)notifyClass(c,p.lead,m);
+    });
+  }
+
+  function timeRange(c){
+    const [h,m]=(c.time||"00:00").split(":").map(Number),dur=Number(c.duration||25);
+    const end=h*60+m+dur, day=Math.floor(end/1440), e=((end%1440)+1440)%1440;
+    return `${c.time}–${String(Math.floor(e/60)).padStart(2,"0")}:${String(e%60).padStart(2,"0")}${day?" +1d":""}`;
+  }
+  function renderMobileAgenda(){
+    const end=addDays(weekStart,6), startISO=isoDate(weekStart), endISO=isoDate(end);
+    $("weekTitle").textContent=fmtRange(weekStart,end);
+    const grid=$("weekGrid");grid.classList.add("mobile-agenda");grid.innerHTML="";
+    const classes=(data.classes||[]).filter(c=>c.date>=startISO&&c.date<=endISO);
+    const avails=(data.availability||[]).filter(a=>a.date>=startISO&&a.date<=endISO);
+    for(let i=0;i<7;i++){
+      const d=addDays(weekStart,i), key=isoDate(d);
+      const day=document.createElement("div");day.className="mobile-day";
+      day.innerHTML=`<div class="mobile-day-head">${d.toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"})}</div>`;
+      const items=[];
+      avails.filter(a=>a.date===key).forEach(a=>items.push({time:a.start,type:"availability",a}));
+      classes.filter(c=>c.date===key).forEach(c=>items.push({time:c.time,type:"class",c}));
+      items.sort((a,b)=>(a.time||"").localeCompare(b.time||""));
+      if(!items.length){
+        day.insertAdjacentHTML("beforeend",`<div class="mobile-empty">No classes or availability.</div>`);
+      }else{
+        items.forEach(x=>{
+          const row=document.createElement("div");row.className="mobile-agenda-item";
+          if(x.type==="class"){
+            const c=x.c;
+            const tools=(!IS_TRIAL && typeof openClassEditModal==="function")
+              ? `<div class="mobile-agenda-tools"><button type="button" onclick="openClassEditModal('${c.id}')">Edit</button><button type="button" onclick="deleteClass('${c.id}')">Delete</button></div>`:"";
+            row.innerHTML=`<div class="mobile-agenda-time">${esc(timeRange(c))}</div><div class="mobile-agenda-main"><strong>${esc(c.student)}</strong><small>${esc(c.platform||"")} · ${esc(c.lesson||c.status||"Booked")} · ${Number(c.duration||25)} min</small>${tools}</div>`;
+          }else{
+            const a=x.a;
+            const tools=(!IS_TRIAL && typeof openAvailabilityEditModal==="function")
+              ? `<div class="mobile-agenda-tools"><button type="button" onclick="openAvailabilityEditModal('${a.id}')">Edit</button><button type="button" onclick="deleteAvailability('${a.id}')">Delete</button></div>`:"";
+            row.innerHTML=`<div class="mobile-agenda-time">${esc(a.start)}–${esc(a.end)}</div><div class="mobile-agenda-main"><strong>${esc(a.status)}</strong><small>Availability</small>${tools}</div>`;
+          }
+          day.appendChild(row);
+        });
+      }
+      grid.appendChild(day);
+    }
+  }
+
+  const desktopRender=window.renderCalendar||renderCalendar;
+  window.renderCalendar=function(){
+    if(window.matchMedia("(max-width:700px)").matches){
+      renderMobileAgenda();
+    }else{
+      const grid=$("weekGrid");if(grid)grid.classList.remove("mobile-agenda");
+      desktopRender();
+    }
+    updateReminderStatus();
+  };
+  renderCalendar=window.renderCalendar;
+
+  let resizeTimer;
+  window.addEventListener("resize",()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(()=>{
+      const schedule=document.getElementById("schedule");
+      if(schedule&&schedule.classList.contains("active"))renderCalendar();
+    },180);
+  });
+
+  // Re-check immediately when the tab becomes active again.
+  document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden)reminderTick();
+  });
+  window.addEventListener("focus",reminderTick);
+
+  injectReminderUI();
+  reminderTick();
+  reminderTimer=setInterval(reminderTick,30000);
+})();
+</script>
+
+</body>
+</html>
