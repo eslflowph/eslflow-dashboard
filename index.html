@@ -1737,6 +1737,7 @@ window.resetTrial=resetTrial;
 
   return false;
 }
+}
   async function saveCloud(){
     if(!token||!loaded)return; clearTimeout(saveTimer);saveTimer=null;saveInFlight=true;setChip("Cloud: saving…");
     try{await request({action:"save",token,data});dirty=false;setChip("Cloud: saved ✓")}
@@ -1781,7 +1782,7 @@ window.resetTrial=resetTrial;
   window.addEventListener("focus",()=>{if(loaded&&!dirty&&!saveInFlight)loadCloud({quiet:true})});
   document.addEventListener("visibilitychange",()=>{if(!document.hidden&&loaded&&!dirty&&!saveInFlight)loadCloud({quiet:true})});
   loadCloud();
-
+})();
 </script>
 
 <script id="eslflow-mobile-reminder-js">
