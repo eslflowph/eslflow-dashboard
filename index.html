@@ -1686,7 +1686,12 @@ window.resetTrial=resetTrial;
   async function request(payload){
     const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
     let j={}; try{j=await r.json()}catch{}
-    if(!r.ok)throw new Error(j.error||`Cloud request failed (${r.status})`);
+    if(!r.ok){
+  const err=new Error(j.error||`Cloud request failed (${r.status})`);
+  err.status=r.status;
+  err.data=j;
+  throw err;
+}
     return j;
   }
   async function loadCloud({quiet=false}={}){
@@ -1705,11 +1710,33 @@ window.resetTrial=resetTrial;
       if(typeof renderAll==="function")renderAll();
       loaded=true;setChip("Cloud: synced ✓");if(gate)gate.style.display="none";return true;
     }catch(err){
-      console.error("ESLFlow cloud load failed",err);setChip("Cloud: connection error");
-      if(!quiet&&gate){gate.style.display="flex";gateText.textContent="We couldn't open this private Trial right now. Check your internet connection or Trial link, then try again.";retryBtn.style.display="inline-block"}
-      return false;
+  console.error("ESLFlow cloud load failed",err);
+
+  if(err.data?.expired === true){
+    setChip("Trial expired");
+
+    if(gate){
+      gate.style.display="flex";
+      gateText.innerHTML=
+        `<strong>Your 30-DAY ESLFlow Trial has expired.</strong><br><br>
+        Your Trial period has ended. Upgrade to the Full Version to continue using ESLFlow.<br><br>
+        <strong>₱299 • 1 Year Access</strong>`;
     }
+
+    if(retryBtn)retryBtn.style.display="none";
+    return false;
   }
+
+  setChip("Cloud: connection error");
+
+  if(!quiet&&gate){
+    gate.style.display="flex";
+    gateText.textContent=
+      "We couldn't open this private Trial right now. Check your internet connection and try again.";
+  }
+
+  return false;
+}
   async function saveCloud(){
     if(!token||!loaded)return; clearTimeout(saveTimer);saveTimer=null;saveInFlight=true;setChip("Cloud: saving…");
     try{await request({action:"save",token,data});dirty=false;setChip("Cloud: saved ✓")}
