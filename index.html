@@ -1725,6 +1725,17 @@ window.resetTrial=resetTrial;
       const res=await request({action:"load",token});
       if(dirty||saveInFlight)return true;
       data=normalize(res.data);
+      const oldDefaultPlatforms=["Pinecone English","Novakid","Cambly"];
+
+data.platforms=(data.platforms||[]).filter(
+  p=>!oldDefaultPlatforms.includes(p)
+);
+
+if(!data.platforms.includes("Preply"))
+  data.platforms.unshift("Preply");
+
+if(!data.platforms.includes("Direct Student"))
+  data.platforms.push("Direct Student");
       localStorage.setItem(TRIAL_KEY,JSON.stringify(data));
       updateResetButton(res);
       if(typeof renderAll==="function")renderAll();
