@@ -1373,15 +1373,6 @@ window.resetTrial=resetTrial;
     }
   });
 
-  /* Lock platform creation in trial, but keep built-in platforms available. */
-  document.addEventListener("click",function(e){
-    const btn=e.target.closest("button");
-    if(!btn)return;
-    const txt=(btn.textContent||"").trim().toLowerCase();
-    if(txt.includes("add platform")){
-      e.preventDefault();e.stopImmediatePropagation();showTrialUpgrade();
-    }
-  },true);
 
   /* Lock settings form edits. */
   document.querySelectorAll("#settings input,#settings select,#settings textarea").forEach(el=>{
