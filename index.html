@@ -685,7 +685,7 @@ const DEFAULTS={
     theme:"light",
     accent:"#f65f93"
   },
-  platforms:["Pinecone English","Novakid","Preply","Cambly","Direct Student"],
+  platforms:["Preply","Direct Student"],
   students:[],
   classes:[],
   availability:[],
@@ -965,9 +965,29 @@ $("saveModal").onclick=()=>{
     const s=studentById($("fFbStudent").value);if(!s)return alert("Please choose an existing student.");
     updateOrPush("feedback",{id:modalMode==="feedback-edit"?editId:uid("FB"),studentId:s.id,student:s.name,platform:s.platform,subject:$("fFbSubject").value,date:$("fFbDate").value,rating:$("fFbRating").value,strength:$("fFbStrength").value.trim(),weakness:$("fFbWeakness").value.trim(),improve:$("fFbImprove").value.trim(),comment:$("fFbComment").value.trim()},modalMode==="feedback-edit"?editId:null)
   }
-  if(modalMode==="platform-add"){
-    const p=$("fPlatformName").value.trim();if(!p)return alert("Enter a platform name.");if(data.platforms.some(x=>x.toLowerCase()===p.toLowerCase()))return alert("That platform already exists.");data.platforms.push(p)
+ if(modalMode==="platform-add"){
+  const p=$("fPlatformName").value.trim();
+
+  if(!p)return alert("Enter a platform name.");
+
+  if(data.platforms.some(x=>x.toLowerCase()===p.toLowerCase()))
+    return alert("That platform already exists.");
+
+  const defaultPlatforms=["Preply","Direct Student"];
+
+  const customPlatforms=data.platforms.filter(
+    x=>!defaultPlatforms.some(
+      d=>d.toLowerCase()===String(x).toLowerCase()
+    )
+  );
+
+  if(customPlatforms.length>=3){
+    showFullOnly("Platforms");
+    return;
   }
+
+  data.platforms.push(p);
+}
   if(["payment-add","payment-edit"].includes(modalMode)){
     const s=studentById($("fPayStudent").value);if(!s)return alert("Please choose an existing student.");
     const amount=Number($("fPayAmount").value||0);if(amount<0)return alert("Payment amount cannot be negative.");
