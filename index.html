@@ -1737,6 +1737,7 @@ if(!data.platforms.includes("Preply"))
 if(!data.platforms.includes("Direct Student"))
   data.platforms.push("Direct Student");
       localStorage.setItem(TRIAL_KEY,JSON.stringify(data));
+      await request({action:"save",token,data});
       updateResetButton(res);
       if(typeof renderAll==="function")renderAll();
       loaded=true;setChip("Cloud: synced ✓");if(gate)gate.style.display="none";return true;
