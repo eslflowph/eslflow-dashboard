@@ -1118,7 +1118,7 @@ function renderCalendar(){
   const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   $("weekGrid").insertAdjacentHTML("beforeend",`<div class="corner"></div>`);
   for(let d=0;d<7;d++){const date=addDays(weekStart,d);$("weekGrid").insertAdjacentHTML("beforeend",`<div class="day-head">${days[d]}, ${date.toLocaleDateString("en-US",{month:"2-digit",day:"2-digit"})}</div>`)}
-  const startHour=9,endHour=21;
+  const startHour=9,endHour=24;
   for(let h=startHour;h<endHour;h++){
     $("weekGrid").insertAdjacentHTML("beforeend",`<div class="time-cell">${String(h).padStart(2,"0")}:00</div>`);
     for(let d=0;d<7;d++){const date=isoDate(addDays(weekStart,d));$("weekGrid").insertAdjacentHTML("beforeend",`<div class="slot" id="cell-${date}-${h}"></div>`)}
