@@ -864,7 +864,7 @@ function openClassEditModal(id){
     <div><label>Student</label><select id="fClassStudent">${studentOptions(c.studentId)}</select></div>
     <div><label>Date</label><input id="fClassDate" type="date" value="${esc(c.date)}"></div>
     <div><label>Start Time</label><input id="fClassTime" type="time" value="${esc(c.time)}"></div>
-    <div><label>Duration</label><select id="fClassDuration">${[25,30,40,45,50,60,90,120].map(x=>`<option value="${x}" ${d===x?"selected":""}>${x} minutes</option>`).join("")}${![25,30,40,45,50,60,90,120].includes(d)?`<option value="${d}" selected>${d} minutes</option>`:""}</select></div>
+    <div><label>Duration</label><select id="fClassDuration">${Array.from({length:22},(_,i)=>25+i*5).map(x=>`<option value="${x}" ${d===x?"selected":""}>${x} minutes</option>`).join("")}${!Array.from({length:22},(_,i)=>25+i*5).includes(d)?`<option value="${d}" selected>${d} minutes</option>`:""}</select></div>
     <div><label>Status</label><select id="fClassStatus">${["Booked","Completed","Cancelled","No Show"].map(x=>`<option ${x===c.status?"selected":""}>${x}</option>`).join("")}</select></div>
     <div><label>Lesson / Topic</label><input id="fClassLesson" value="${esc(c.lesson||"")}"></div>
     <div class="full"><label>Class Link / Room Note</label><input id="fClassLink" value="${esc(c.link||"")}"></div>
