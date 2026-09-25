@@ -1523,7 +1523,7 @@ window.resetTrial=resetTrial;
       <div><label>Student</label><select id="fClassStudent">${studentOptions()}</select></div>
       <div><label>Date</label><input id="fClassDate" type="date" value="${todayISO()}"></div>
       <div><label>Start Time</label><input id="fClassTime" type="time" value="10:00"></div>
-      <div><label>Duration</label><select id="fClassDuration">${[25,30,40,45,50,60,90,120].map(x=>`<option value="${x}">${x} minutes</option>`).join("")}</select></div>
+      <div><label>Duration</label><select id="fClassDuration">${Array.from({length:22},(_,i)=>25+i*5).map(x=>`<option value="${x}">${x} minutes</option>`).join("")}</select></div>
       <div><label>Status</label><select id="fClassStatus"><option>Booked</option><option>Completed</option><option>Cancelled</option><option>No Show</option></select></div>
       <div><label>Lesson / Topic</label><input id="fClassLesson"></div>
       <div><label>Recurring</label><select id="fRecurring" disabled><option value="none">No — Full Version only</option></select></div>
