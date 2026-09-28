@@ -114,6 +114,217 @@ button{cursor:pointer}
 }
 .stat strong{display:block;font-size:28px;color:var(--accent);margin-bottom:4px}
 .stat span{font-size:13px;color:var(--muted)}
+  /* ===== Dashboard Welcome ===== */
+.dashboard-welcome-card{
+  flex:1;
+  width:100%;
+  min-height:100px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:20px 24px;
+  border-radius:18px;
+  background:linear-gradient(
+    135deg,
+    var(--accent),
+    color-mix(in srgb,var(--accent) 78%,black)
+  );
+  color:#fff;
+  box-shadow:0 8px 22px rgba(0,0,0,.10);
+  overflow:hidden;
+}
+
+.dashboard-welcome-card h1{
+  margin:0 0 6px;
+  color:#fff;
+  font-size:28px;
+  font-weight:900;
+}
+
+.page-head .dashboard-welcome-card p{
+  margin:0;
+  color:rgba(255,255,255,.88);
+}
+
+.dashboard-welcome-heart{
+  font-size:64px;
+  line-height:1;
+  color:#fff;
+  opacity:.20;
+  flex:0 0 auto;
+}
+
+
+/* ===== Dashboard Overview ===== */
+.overview-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-top:10px;
+}
+
+.overview-item{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px 16px;
+  box-shadow:var(--shadow);
+}
+
+.overview-item strong{
+  display:block;
+  font-size:28px;
+  line-height:1;
+  color:var(--accent);
+  margin-bottom:9px;
+  font-weight:900;
+}
+
+.overview-item span{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+
+/* ===== Dashboard Lists ===== */
+.dashboard-card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.dashboard-card-head h3{
+  margin:0;
+}
+
+.dashboard-view-all{
+  border:0;
+  background:transparent;
+  color:var(--accent);
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  padding:4px 6px;
+}
+
+.dashboard-view-all:hover{
+  text-decoration:underline;
+}
+
+.dashboard-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:8px;
+}
+
+.dashboard-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:11px 12px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:color-mix(in srgb,var(--accent) 4%,var(--surface));
+  text-align:left;
+}
+
+.dashboard-row-main{
+  flex:1;
+  min-width:0;
+  text-align:left;
+}
+
+.dashboard-row-title{
+  font-size:13px;
+  font-weight:800;
+  color:var(--text);
+  margin-bottom:3px;
+  text-align:left;
+}
+
+.dashboard-row-sub{
+  font-size:11px;
+  color:var(--muted);
+  text-align:left;
+}
+
+.dashboard-row-side{
+  flex:0 0 auto;
+  text-align:right;
+}
+
+.dashboard-pill{
+  display:inline-block;
+  padding:4px 9px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:800;
+  background:color-mix(in srgb,var(--accent) 14%,white);
+  color:color-mix(in srgb,var(--accent) 80%,black);
+}
+  /* ===== Dashboard View All Popup ===== */
+.dashboard-view-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:rgba(0,0,0,.38);
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.dashboard-view-modal.open{
+  display:flex;
+}
+
+.dashboard-view-modal-box{
+  width:min(700px,95vw);
+  max-height:80vh;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 18px 50px rgba(0,0,0,.25);
+  overflow:hidden;
+}
+
+.dashboard-view-modal-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 18px;
+  border-bottom:1px solid var(--border);
+}
+
+.dashboard-view-modal-head h3{
+  margin:0;
+}
+
+.dashboard-view-modal-close{
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:9px;
+  background:color-mix(in srgb,var(--accent) 12%,white);
+  color:var(--accent);
+  font-size:22px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.dashboard-view-modal-content{
+  padding:16px 18px 18px;
+  max-height:65vh;
+  overflow-y:auto;
+}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .toolbar{
@@ -285,6 +496,7 @@ td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
   .grid-2,.grid-3,.setup-grid{grid-template-columns:1fr}.page-head{flex-direction:column}.clock{text-align:left}
   .toolbar{flex-direction:column;align-items:stretch}.filters{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}
   .cal-toolbar{grid-template-columns:1fr}.cal-title{order:-1}.cal-nav-right{justify-content:flex-start;flex-wrap:wrap}
+  .overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media print{
   body{background:#fff}.sidebar,.page-head,.toolbar,.btn,.action,.clock,.calendar-shell{display:none!important}
@@ -447,6 +659,40 @@ td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
   .reminder-controls{width:100%}
   .reminder-controls select,.reminder-controls button{flex:1;min-width:130px}
   .eslflow-toast{right:10px;bottom:82px;width:calc(100% - 20px)}
+  .overview-grid{
+  grid-template-columns:1fr!important;
+}
+
+.dashboard-row{
+  flex-direction:column;
+  align-items:flex-start;
+}
+
+.dashboard-row-side{
+  text-align:left;
+}
+
+.dashboard-welcome-card{
+  padding:16px!important;
+}
+
+.dashboard-welcome-card h1{
+  font-size:22px!important;
+}
+
+.dashboard-welcome-heart{
+  font-size:44px;
+}
+
+.dashboard-view-modal{
+  padding:10px;
+}
+
+.dashboard-view-modal-box{
+  width:100%;
+  max-height:85vh;
+}
+  
 }
 @media(min-width:701px){
   .eslflow-toast{bottom:18px}
@@ -511,29 +757,139 @@ td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
   <main class="main">
 <div class="trial-note"><strong>Trial limits:</strong> You may create up to <b>3 students</b>, <b>3 classes</b>, <b>3 attendance records</b>, <b>3 feedback records</b>, <b>3 payments</b>, <b>3 class records</b>, and <b>3 availability slots</b>. <b>Accent Color customization is enabled in the Trial.</b> Other Settings changes and Backup & Export actions remain Full Version features.</div>
     <section class="page active" id="dashboard">
-      <div class="page-head">
-        <div><h1 id="welcomeTitle">Teacher Dashboard</h1><p>Manage students, classes, income, feedback, and teaching records in one place.</p></div>
-        <div class="clock"></div>
+  <div class="page-head">
+
+    <div class="dashboard-welcome-card">
+      <div>
+        <h1 id="welcomeTitle">Welcome to Teacher</h1>
+        <p>
+          Manage your students, classes, income, feedback, and teaching records in one place.
+        </p>
       </div>
-      <div class="stats">
-        <div class="stat"><strong id="statStudents">0</strong><span>Total Students</span></div>
-        <div class="stat"><strong id="statUpcoming">0</strong><span>Upcoming Classes</span></div>
-        <div class="stat"><strong id="statMonthIncome">₱0</strong><span>This Month Income</span></div>
-        <div class="stat"><strong id="statAttendance">0%</strong><span>Attendance Rate</span></div>
+
+      <div class="dashboard-welcome-heart">♥</div>
+    </div>
+
+    <div class="clock"></div>
+  </div>
+
+  <div class="card">
+    <h3>Overview</h3>
+
+    <div class="overview-grid">
+      <div class="overview-item">
+        <strong id="ovTotalStudents">0</strong>
+        <span>Total Students</span>
       </div>
-      <div class="grid-2">
-        <div class="card"><h3>Upcoming Classes</h3><div id="upcomingList" class="empty">No upcoming classes yet.</div></div>
-        <div class="card"><h3>Recent Feedback</h3><div id="recentFeedback" class="empty">No feedback yet.</div></div>
+
+      <div class="overview-item">
+        <strong id="ovActiveStudents">0</strong>
+        <span>Active Students</span>
       </div>
-      <div class="card">
-        <h3>Quick Actions</h3>
-        <div style="display:flex;gap:9px;flex-wrap:wrap">
-          <button class="btn" onclick="openStudentModal()">+ Add Student</button>
-          <button class="btn" onclick="openClassModal()">+ Add Class</button>
-          <button class="btn" onclick="openFeedbackModal()">+ Add Feedback</button>
-          <button class="btn outline" onclick="navigate('backup')">Backup Data</button>
-        </div>
+
+      <div class="overview-item">
+        <strong id="ovClassesToday">0</strong>
+        <span>Classes Today</span>
       </div>
+
+      <div class="overview-item">
+        <strong id="ovClassesWeek">0</strong>
+        <span>Classes This Week</span>
+      </div>
+
+      <div class="overview-item">
+        <strong id="ovClassesMonth">0</strong>
+        <span>Classes This Month</span>
+      </div>
+
+      <div class="overview-item">
+        <strong id="ovClassesYear">0</strong>
+        <span>Classes This Year</span>
+      </div>
+
+      <div class="overview-item">
+        <strong id="ov25MinClasses">0</strong>
+        <span>25-Min Classes</span>
+      </div>
+
+      <div class="overview-item">
+        <strong id="ov50MinClasses">0</strong>
+        <span>50-Min Classes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <strong id="statStudents">0</strong>
+      <span>Total Students</span>
+    </div>
+
+    <div class="stat">
+      <strong id="statUpcoming">0</strong>
+      <span>Upcoming Classes</span>
+    </div>
+
+    <div class="stat">
+      <strong id="statMonthIncome">₱0</strong>
+      <span>This Month Income</span>
+    </div>
+
+    <div class="stat">
+      <strong id="statAttendance">0%</strong>
+      <span>Attendance Rate</span>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <div class="card">
+      <div class="dashboard-card-head">
+        <h3>Upcoming Classes</h3>
+        <button
+          id="viewAllUpcomingBtn"
+          class="dashboard-view-all"
+          type="button"
+        >
+          View All
+        </button>
+      </div>
+
+      <div id="upcomingList">
+        No upcoming classes yet.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="dashboard-card-head">
+        <h3>Recent Feedback</h3>
+        <button
+          id="viewAllFeedbackBtn"
+          class="dashboard-view-all"
+          type="button"
+        >
+          View All
+        </button>
+      </div>
+
+      <div id="recentFeedback">
+        No feedback yet.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <h3>Quick Actions</h3>
+
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn" onclick="openStudentModal()">+ Add Student</button>
+      <button class="btn" onclick="openClassModal()">+ Add Class</button>
+      <button class="btn" onclick="openFeedbackModal()">+ Add Feedback</button>
+      <button class="btn outline" onclick="navigate('backup')">Backup Data</button>
+    </div>
+  </div>
+
     </section>
 
     <section class="page" id="students">
@@ -796,7 +1152,14 @@ function applySettings(){
   document.documentElement.style.setProperty("--accent",data.settings.accent||"#f65f93");
   $("brandName").textContent=data.settings.brand||"ESLFlow";
   $("brandTagline").textContent=data.settings.tagline||"Teach • Track • Grow";
-  $("welcomeTitle").textContent=(data.settings.teacher||"Teacher")+" Dashboard";
+  const teacherName=String(data.settings.teacher||"")
+  .replace(/^Teacher(?:\s+|$)/i,"")
+  .trim();
+
+$("welcomeTitle").textContent=
+  teacherName
+    ? "Welcome to Teacher "+teacherName
+    : "Welcome to Teacher";
 }
 function updateClocks(){
   const tz=data.settings.timezone||"Asia/Manila",now=new Date();
@@ -1165,12 +1528,252 @@ function renderRecords(){
   </tr>`).join(""):`<tr><td colspan="6" class="empty">No class records yet.</td></tr>`
 }
 function renderDashboard(){
-  const today=todayISO(),month=monthKey(today),upcoming=data.classes.filter(c=>c.date>=today&&c.status!=="Cancelled"),monthIncome=data.payments.filter(p=>monthKey(p.date)===month&&p.status==="Paid").reduce((a,b)=>a+b.amount,0);
-  const considered=data.attendance.filter(a=>!["Cancelled"].includes(a.status)),present=considered.filter(a=>["Present","Late"].includes(a.status)).length,rate=considered.length?Math.round(present/considered.length*100):0;
-  $("statStudents").textContent=data.students.length;$("statUpcoming").textContent=upcoming.length;$("statMonthIncome").textContent=cur(monthIncome);$("statAttendance").textContent=rate+"%";
-  $("upcomingList").innerHTML=upcoming.slice().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,6).map(c=>`<p><b>${esc(c.student)}</b> · ${esc(c.platform)}<br><small>${esc(c.date)} ${esc(c.time)} · ${c.duration} min · ${esc(c.lesson||c.status)}</small></p>`).join("")||'<div class="empty">No upcoming classes yet.</div>';
-  $("recentFeedback").innerHTML=data.feedback.slice(-5).reverse().map(f=>`<p><b>${esc(f.student)}</b> · ${esc(f.subject)}<br><small>${esc(f.date)} · ${esc(f.rating)}</small></p>`).join("")||'<div class="empty">No feedback yet.</div>'
+  const today=todayISO();
+  const month=monthKey(today);
+
+  const upcoming=data.classes.filter(
+    c=>c.date>=today && c.status!=="Cancelled"
+  );
+
+  const monthIncome=data.payments
+    .filter(p=>monthKey(p.date)===month && p.status==="Paid")
+    .reduce((a,b)=>a+b.amount,0);
+
+  const considered=data.attendance.filter(
+    a=>!["Cancelled"].includes(a.status)
+  );
+
+  const present=considered.filter(
+    a=>["Present","Late"].includes(a.status)
+  ).length;
+
+  const rate=considered.length
+    ? Math.round(present/considered.length*100)
+    : 0;
+
+  /* EXISTING 4 STATS */
+  $("statStudents").textContent=data.students.length;
+  $("statUpcoming").textContent=upcoming.length;
+  $("statMonthIncome").textContent=cur(monthIncome);
+  $("statAttendance").textContent=rate+"%";
+
+  /* OVERVIEW */
+  const activeStudents=data.students.filter(
+    s=>(s.status||"Active")==="Active"
+  ).length;
+
+  const now=new Date();
+  const weekStartDate=getMonday(now);
+  const weekEndDate=addDays(weekStartDate,6);
+  const weekStartISO=isoDate(weekStartDate);
+  const weekEndISO=isoDate(weekEndDate);
+  const currentYear=String(now.getFullYear());
+
+  const classesToday=data.classes.filter(
+    c=>c.date===today
+  ).length;
+
+  const classesThisWeek=data.classes.filter(
+    c=>c.date>=weekStartISO && c.date<=weekEndISO
+  ).length;
+
+  const classesThisMonth=data.classes.filter(
+    c=>monthKey(c.date)===month
+  ).length;
+
+  const classesThisYear=data.classes.filter(
+    c=>(c.date||"").startsWith(currentYear)
+  ).length;
+
+  const classes25=data.classes.filter(
+    c=>Number(c.duration||25)===25
+  ).length;
+
+  const classes50=data.classes.filter(
+    c=>Number(c.duration||25)===50
+  ).length;
+
+  $("ovTotalStudents").textContent=data.students.length;
+  $("ovActiveStudents").textContent=activeStudents;
+  $("ovClassesToday").textContent=classesToday;
+  $("ovClassesWeek").textContent=classesThisWeek;
+  $("ovClassesMonth").textContent=classesThisMonth;
+  $("ovClassesYear").textContent=classesThisYear;
+  $("ov25MinClasses").textContent=classes25;
+  $("ov50MinClasses").textContent=classes50;
+
+  /* UPCOMING CLASSES */
+  const allUpcoming=upcoming
+    .slice()
+    .sort((a,b)=>
+      (a.date+a.time).localeCompare(b.date+b.time)
+    );
+
+  const dashboardUpcoming=allUpcoming.slice(0,3);
+
+  $("upcomingList").innerHTML=
+    dashboardUpcoming.length
+      ? `
+        <div class="dashboard-list">
+          ${dashboardUpcoming.map(c=>`
+            <div class="dashboard-row">
+              <div class="dashboard-row-main">
+                <div class="dashboard-row-title">
+                  ${esc(c.student||"Student")}
+                </div>
+
+                <div class="dashboard-row-sub">
+                  ${esc(c.platform||"—")} ·
+                  ${esc(c.date||"")} ·
+                  ${esc(c.time||"")} ·
+                  ${Number(c.duration||25)} min
+                </div>
+              </div>
+
+              <div class="dashboard-row-side">
+                <span class="dashboard-pill">
+                  ${esc(c.status||"Booked")}
+                </span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `
+      : '<div class="empty">No upcoming classes yet.</div>';
+
+  /* RECENT FEEDBACK */
+  const allRecentFeedback=data.feedback
+    .slice()
+    .reverse();
+
+  const dashboardFeedback=allRecentFeedback.slice(0,3);
+
+  $("recentFeedback").innerHTML=
+    dashboardFeedback.length
+      ? `
+        <div class="dashboard-list">
+          ${dashboardFeedback.map(f=>`
+            <div class="dashboard-row">
+              <div class="dashboard-row-main">
+                <div class="dashboard-row-title">
+                  ${esc(f.student||"Student")}
+                </div>
+
+                <div class="dashboard-row-sub">
+                  ${esc(f.subject||"Feedback")} ·
+                  ${esc(f.date||"")}
+                </div>
+              </div>
+
+              <div class="dashboard-row-side">
+                <span class="dashboard-pill">
+                  ${esc(f.rating||"Recorded")}
+                </span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `
+      : '<div class="empty">No feedback yet.</div>';
+
+  /* VIEW ALL — UPCOMING */
+  const upcomingBtn=$("viewAllUpcomingBtn");
+
+  if(upcomingBtn){
+    upcomingBtn.style.display=
+      allUpcoming.length>3 ? "inline-block" : "none";
+
+    upcomingBtn.onclick=()=>{
+      $("dashboardViewModalTitle").textContent="Upcoming Classes";
+
+      $("dashboardViewModalContent").innerHTML=`
+        <div class="dashboard-list">
+          ${allUpcoming.map(c=>`
+            <div class="dashboard-row">
+              <div class="dashboard-row-main">
+                <div class="dashboard-row-title">
+                  ${esc(c.student||"Student")}
+                </div>
+
+                <div class="dashboard-row-sub">
+                  ${esc(c.platform||"—")} ·
+                  ${esc(c.date||"")} ·
+                  ${esc(c.time||"")} ·
+                  ${Number(c.duration||25)} min
+                </div>
+              </div>
+
+              <div class="dashboard-row-side">
+                <span class="dashboard-pill">
+                  ${esc(c.status||"Booked")}
+                </span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+
+      $("dashboardViewModal").classList.add("open");
+    };
+  }
+
+  /* VIEW ALL — FEEDBACK */
+  const feedbackBtn=$("viewAllFeedbackBtn");
+
+  if(feedbackBtn){
+    feedbackBtn.style.display=
+      allRecentFeedback.length>3 ? "inline-block" : "none";
+
+    feedbackBtn.onclick=()=>{
+      $("dashboardViewModalTitle").textContent="Recent Feedback";
+
+      $("dashboardViewModalContent").innerHTML=`
+        <div class="dashboard-list">
+          ${allRecentFeedback.map(f=>`
+            <div class="dashboard-row">
+              <div class="dashboard-row-main">
+                <div class="dashboard-row-title">
+                  ${esc(f.student||"Student")}
+                </div>
+
+                <div class="dashboard-row-sub">
+                  ${esc(f.subject||"Feedback")} ·
+                  ${esc(f.date||"")}
+                </div>
+              </div>
+
+              <div class="dashboard-row-side">
+                <span class="dashboard-pill">
+                  ${esc(f.rating||"Recorded")}
+                </span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+
+      $("dashboardViewModal").classList.add("open");
+    };
+  }
 }
+  document.addEventListener("DOMContentLoaded",()=>{
+  const dashboardViewModal=$("dashboardViewModal");
+  const dashboardViewModalClose=$("dashboardViewModalClose");
+
+  if(dashboardViewModalClose){
+    dashboardViewModalClose.onclick=()=>{
+      dashboardViewModal.classList.remove("open");
+    };
+  }
+
+  if(dashboardViewModal){
+    dashboardViewModal.onclick=(e)=>{
+      if(e.target===dashboardViewModal){
+        dashboardViewModal.classList.remove("open");
+      }
+    };
+  }
+});
 function renderReports(){
   const totalIncome=data.payments.filter(p=>p.status==="Paid").reduce((a,b)=>a+b.amount,0);
   $("reportStudents").textContent=data.students.length;$("reportLessons").textContent=data.records.length;$("reportIncome").textContent=cur(totalIncome);
@@ -2258,6 +2861,25 @@ document.addEventListener("mouseout",e=>{
   reminderTimer=setInterval(reminderTick,30000);
 })();
 </script>
+<div id="dashboardViewModal" class="dashboard-view-modal">
+  <div class="dashboard-view-modal-box">
 
+    <div class="dashboard-view-modal-head">
+      <h3 id="dashboardViewModalTitle">View All</h3>
+      <button
+        id="dashboardViewModalClose"
+        class="dashboard-view-modal-close"
+        type="button"
+      >×</button>
+    </div>
+
+    <div
+      id="dashboardViewModalContent"
+      class="dashboard-view-modal-content"
+    ></div>
+
+  </div>
+</div>
+  
 </body>
 </html>
