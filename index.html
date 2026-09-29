@@ -393,6 +393,16 @@ td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
 .cal-title{font-weight:800;text-align:center;color:var(--accent)}
 .smallbtn{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:8px 11px;border-radius:8px}
 .smallbtn.today{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .schedule-accent-btn{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+  font-weight:800;
+}
+
+.schedule-accent-btn:hover{
+  filter:brightness(.92);
+}
 .sleep-note{
   margin:10px 12px;border:1px solid #f0bc44;background:#fff5d2;color:#7e590d;
   border-radius:8px;padding:8px 12px;text-align:center;font-size:11px
@@ -925,8 +935,8 @@ td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
           <div class="cal-title" id="weekTitle"></div>
           <div class="cal-nav-right">
             <select id="timezoneSelect"><option>Asia/Manila</option><option>Asia/Tokyo</option><option>Asia/Seoul</option><option>Asia/Shanghai</option></select>
-            <button class="smallbtn" onclick="renderCalendar()">Refresh</button>
-            <button class="smallbtn" id="copySlots">Copy Slots</button>
+            <button class="smallbtn schedule-accent-btn" onclick="openClassModal()">+ Add Class</button>
+<button class="smallbtn schedule-accent-btn" onclick="openAvailabilityModal()">Manage Availability</button>
           </div>
         </div>
         <div class="sleep-note">Tip: You can set available or blocked time slots, then add booked classes on top of your weekly calendar.</div>
@@ -937,10 +947,7 @@ td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:top}
             <span><i class="dot preply"></i>Preply</span><span><i class="dot cambly"></i>Cambly</span>
             <span><i class="dot direct"></i>Direct</span><span><i class="dot other"></i>Other</span>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn" onclick="openClassModal()">+ Add Class</button>
-            <button class="btn outline" onclick="openAvailabilityModal()">Manage Availability</button>
-          </div>
+        
         </div>
       </div>
     </section>
